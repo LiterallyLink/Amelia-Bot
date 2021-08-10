@@ -12,7 +12,7 @@ module.exports = class extends Command {
 	}
 
 	async run(message, [query]) {
-		const { commands, aliases } = this.client;
+		const { commands, aliases, embed } = this.client;
 		const commandList = commands.map(cmd => cmd.name);
 		let categories = this.client.utils.removeDuplicates(commands.map(cmd => cmd.category));
 		const prefix = await this.client.database.getPrefix(message);
@@ -30,23 +30,24 @@ module.exports = class extends Command {
 
 			const categoryHelpEmbed = new MessageEmbed()
 				.setAuthor(`${query} Plugin Menu`, this.client.user.displayAvatarURL())
-				.setThumbnail(this.client.embed.thumbnails.ameRead)
+				.setThumbnail(embed.thumbnails.ameRead)
 				.setDescription(`${categoryCommands}`)
-				.setFooter(`For more information on a command, use ${prefix}help <command_name>.`)
-				.setColor(this.client.embed.color.default);
+				.setFooter(`For more information on a command, use ${prefix}help (command)`)
+				.setColor(embed.color.default);
 
 			return message.reply({ embeds: [categoryHelpEmbed] });
 		} else if (commandOrCategory === 'isCommand') {
-			const command = this.client.commands.get(query) || this.client.commands.get(this.client.aliases.get(query));
+			query = query.toLowerCase();
+			const command = commands.get(query) || commands.get(aliases.get(query));
 
 			const commandHelpEmbed = new MessageEmbed()
 				.setAuthor(`${this.client.utils.capitalise(command.name)} Command Help`, this.client.user.displayAvatarURL())
-				.setThumbnail(this.client.embed.thumbnails.ameRead)
+				.setThumbnail(embed.thumbnails.ameRead)
 				.addField('Aliases:', `${command.aliases.length ? command.aliases.map(alias => `\`${alias}\``).join(' ') : 'No Aliases'}`, true)
 				.addField('Description:', `${command.description}`, true)
 				.addField('Category:', `${command.category}`, true)
 				.addField('Usage:', `${command.usage}`, true)
-				.setColor(this.client.embed.color.default);
+				.setColor(embed.color.default);
 
 			return message.reply({ embeds: [commandHelpEmbed] });
 		} else {
@@ -57,8 +58,8 @@ module.exports = class extends Command {
 
 			const defaultHelpMenu = new MessageEmbed()
 				.setAuthor("Amelia's Help Menu", this.client.user.displayAvatarURL())
-				.setThumbnail(this.client.embed.thumbnails.ameRead)
-				.setColor(this.client.embed.color.default);
+				.setThumbnail(embed.thumbnails.ameRead)
+				.setColor(embed.color.default);
 
 			for (const category of categories) {
 				defaultHelpMenu.addField(`**${this.client.utils.capitalise(category)}**`,
