@@ -14,7 +14,9 @@ module.exports = class Music {
 			const voiceEmbed = new MessageEmbed()
 				.setDescription('To use this command, you must be in a voice channel!')
 				.setColor(this.client.embed.color.default);
-			return message.channel.send({ embeds: [voiceEmbed] });
+			message.channel.send({ embeds: [voiceEmbed] });
+
+			return false;
 		}
 
 		return true;
@@ -25,7 +27,9 @@ module.exports = class Music {
 			const resultsEmbed = new MessageEmbed()
 				.setTitle('You must be in the same voice channel as me to use this command.')
 				.setColor(this.client.embed.color.error);
-			return message.reply({ embeds: [resultsEmbed] });
+			message.reply({ embeds: [resultsEmbed] });
+
+			return false;
 		}
 
 		return true;
