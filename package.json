@@ -1,0 +1,31 @@
+{
+  "name": "amelia-bot",
+  "version": "1.0.0",
+  "description": "Amelia is a multi-purpose discord bot primarily written in JS, based off of the popular VTuber Amelia Watson!",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "LiterallyLink",
+  "license": "ISC",
+  "dependencies": {
+    "@discord-player/downloader": "^3.0.0",
+    "@discord-player/extractor": "^3.0.2",
+    "@discordjs/voice": "^0.5.6",
+    "@extreme_hero/deeptype": "^1.0.1",
+    "discord-player": "^5.0.2",
+    "discord.js": "^13.0.0-dev.t1628124537.3eb4140",
+    "glob": "^7.1.7",
+    "jshint": "^2.13.0",
+    "moment": "^2.29.1",
+    "mongoose": "^5.13.5",
+    "ms": "^2.1.3",
+    "node-superfetch": "^0.2.3",
+    "opusscript": "^0.0.8"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-tesseract": "^0.3.0",
+    "npm": "^7.20.3"
+  }
+}
