@@ -34,14 +34,14 @@ module.exports = class extends Command {
 
 		if (lyrics === null) {
 			const noLyrics = new MessageEmbed()
-				.setDescription(`The current song has no lyrics!`)
+				.setDescription(`I couldn't find lyrics for this track!`)
 				.setColor(embed.color.error);
-			return message.channel.send({ embed: [noLyrics] });
+			return message.channel.send({ embeds: [noLyrics] });
 		}
 
 		const lyricsEmbed = new MessageEmbed()
 			.setTitle(queue.current.title)
-			.setThumbnail(embed.thumbnails.ameRead)
+			.setThumbnail(queue.thumbnail)
 			.setColor(embed.color.default)
 			.setDescription(`${lyrics}`);
 		return message.channel.send({ embeds: [lyricsEmbed] });
