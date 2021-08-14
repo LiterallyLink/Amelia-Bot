@@ -44,6 +44,8 @@ module.exports = class AmeliaClient extends Client {
 
 		this.level = new Level(this);
 
+		this.cooldowns = new Map();
+
 		this.owners = options.owners;
 
 		this.embed = require('../../assets/jsons/embed.json');
