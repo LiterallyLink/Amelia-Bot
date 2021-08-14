@@ -1,5 +1,5 @@
 const Command = require('../Command.js');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, Collection } = require('discord.js');
 const Event = require('../Event.js');
 const path = require('path');
 const { promisify } = require('util');
@@ -97,7 +97,8 @@ module.exports = class Util {
 		const sec = totalSeconds % 60;
 		const mili = milliseconds % 1000;
 
-		return (hr > 1 ? `${Math.floor(hr)}h ` : '') + (min > 1 ? `${Math.floor(min)}m ` : '') + ((min === 0) || sec > 1 || mili > 0 ? `${Math.floor(sec)}s` : '');
+		return (hr > 1 ? `${Math.floor(hr)}h ` : '') + (min > 1 ? `${Math.floor(min)}m ` : '') +
+		((min === 0) || sec > 1 || mili > 0 ? `${Math.floor(sec)}s` : '');
 	}
 
 	formatPermissions(perm) {
@@ -186,10 +187,37 @@ module.exports = class Util {
 		}
 	}
 
+	userCooldown(message, command) {
+		if (this.checkOwner(message.author)) return false;
+
+		if (!this.client.cooldowns.has(command.name)) {
+			this.client.cooldowns.set(command.name, new Collection());
+		}
+
+		const currentTime = Date.now();
+		const timeout = this.client.cooldowns.get(command.name);
+		const commandCooldown = command.cooldown ? command.cooldown : 3;
+
+		if (timeout.has(message.author.id)) {
+			const expirationTime = timeout.get(message.author.id) + (commandCooldown * 1000);
+			const isCooldownOver = currentTime < expirationTime;
+
+			if (isCooldownOver) {
+				const timeLeft = (expirationTime - currentTime) / 1000;
+				message.reply(`${timeLeft.toFixed(1)}s`);
+				return isCooldownOver;
+			}
+		}
+
+		timeout.set(message.author.id, currentTime);
+		return this.isCooldownOver;
+	}
+
+
 	// Custom asynchronous message collection function
 	async createAsyncMessageCollector(options) {
-		const { time, msg, userInput, maxEntries } = options;
-		const filter = res => res.author.id === msg.author.id && userInput.includes(res.content.toLowerCase());
+		const { msg, input, maxEntries, time } = options;
+		const filter = res => res.author.id === msg.author.id && input.includes(res.content.toLowerCase());
 		const caughtMessages = await msg.channel.awaitMessages({ filter, max: maxEntries, time: time });
 		return caughtMessages.size > 0 ? caughtMessages.first().content.toLowerCase() : false;
 	}
