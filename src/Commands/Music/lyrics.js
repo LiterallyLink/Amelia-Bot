@@ -30,9 +30,9 @@ module.exports = class extends Command {
 			return message.channel.send({ embeds: [noQueue] });
 		}
 
-		const { lyrics } = await lyricsClient.search(queue.current.title);
+		const song = await lyricsClient.search(queue.current.title);
 
-		if (lyrics === null) {
+		if (song === null) {
 			const noLyrics = new MessageEmbed()
 				.setDescription(`I couldn't find lyrics for this track!`)
 				.setColor(embed.color.error);
@@ -43,7 +43,7 @@ module.exports = class extends Command {
 			.setTitle(queue.current.title)
 			.setThumbnail(queue.thumbnail)
 			.setColor(embed.color.default)
-			.setDescription(`${lyrics}`);
+			.setDescription(`${song.lyrics}`);
 		return message.channel.send({ embeds: [lyricsEmbed] });
 	}
 
