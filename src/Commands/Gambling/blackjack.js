@@ -99,11 +99,12 @@ module.exports = class extends Command {
 
 		while (!gameOver) {
 			const collectorOptions = {
-				userMessage: message,
+				msg: message,
 				input: validInput,
-				max: 1,
+				maxEntries: 1,
 				time: 60000
 			};
+
 			const userInput = await this.client.utils.createAsyncMessageCollector(collectorOptions);
 
 			if (!userInput) {
