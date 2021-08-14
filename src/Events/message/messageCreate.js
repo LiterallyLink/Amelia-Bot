@@ -6,10 +6,9 @@ module.exports = class extends Event {
 
 	async run(message) {
 		if (message.author.bot) return;
+		const prefixRegexp = RegExp(`^<@!?${this.client.user.id}> `);
 
-		let prefix = await this.client.database.getPrefix(message);
-
-		prefix = prefix.toLowerCase();
+		const prefix = message.content.match(prefixRegexp) ? message.content.match(prefixRegexp)[0] : await this.client.database.getPrefix(message);
 
 		const mentionRegex = RegExp(`^<@!?${this.client.user.id}>$`);
 
@@ -29,10 +28,10 @@ module.exports = class extends Event {
 
 		const ownerOnlyCommand = command.ownerOnly && !this.client.utils.checkOwner(message.author);
 		const guildOnlyCommand = command.guildOnly && !message.guild;
-
+		const isCommandOnCooldown = this.client.utils.userCooldown(message, command);
 		const commandRequiresArguments = this.client.utils.commandRequiresArguments(message, command, args);
 
-		if (ownerOnlyCommand || guildOnlyCommand || commandRequiresArguments) return;
+		if (ownerOnlyCommand || guildOnlyCommand || commandRequiresArguments || isCommandOnCooldown) return;
 
 		if (message.guild) {
 			if (command) {
