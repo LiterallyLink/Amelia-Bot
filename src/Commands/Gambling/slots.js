@@ -72,7 +72,7 @@ module.exports = class extends Command {
 			randomSlots[i] = slot[i];
 
 			slotEmbed.setDescription(`**${border}\n| ${randomSlots.join(' | ')} |\n${border}\n--- SPINNING ---**`);
-			msg.edit(slotEmbed);
+			msg.edit({ embeds: [slotEmbed] });
 		}
 
 		const triplesWin = slot[0] === slot[1] && slot[0] === slot[2];
@@ -92,7 +92,7 @@ module.exports = class extends Command {
 				{ name: 'Credits', value: `You have ${newBalance} credits`, inline: true });
 			slotEmbed.setColor(this.client.embed.color.success);
 
-			return msg.edit(slotEmbed);
+			return msg.edit({ embeds: [slotEmbed] });
 		} else {
 			const newBalance = await this.client.economy.addCredits(message.guild.id, message.author.id, -bet);
 
@@ -102,7 +102,7 @@ module.exports = class extends Command {
 				{ name: 'Credits', value: `You have ${newBalance} credits`, inline: true });
 			slotEmbed.setColor(this.client.embed.color.error);
 
-			return msg.edit(slotEmbed);
+			return msg.edit({ embeds: [slotEmbed] });
 		}
 	}
 
