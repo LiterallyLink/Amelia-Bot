@@ -24,6 +24,10 @@ module.exports = class Util {
 		return `${path.dirname(require.main.filename)}${path.sep}`;
 	}
 
+	async sleep(ms) {
+		await new Promise(resolve => setTimeout(resolve, ms));
+	}
+
 	// trim's array lengths
 	trimArray(arr, maxLen = 10) {
 		if (arr.length > maxLen) {
