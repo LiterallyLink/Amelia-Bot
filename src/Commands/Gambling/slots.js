@@ -55,7 +55,6 @@ module.exports = class extends Command {
 
 		const randomSlots = new Array(3);
 		randomSlots.fill(emoji.fruit);
-		const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 		this.client.games.set(message.channel.id, { name: this.name });
 
@@ -66,7 +65,7 @@ module.exports = class extends Command {
 		const msg = await message.channel.send({ embeds: [slotEmbed] });
 
 		for (let i = 0; i < 3; i++) {
-			await sleep(1700);
+			await this.client.utils.sleep(1700);
 
 			slot.push(symbols[Math.floor(Math.random() * symbols.length)]);
 			randomSlots[i] = slot[i];
@@ -79,8 +78,9 @@ module.exports = class extends Command {
 		const doublesWin = slot[0] === slot[1] || slot[1] === slot[2];
 		const triplesProfit = Math.floor(bet * triples[slot[0]]);
 		const doublesProfit = Math.floor(bet * doubles[slot[1]]);
-		this.client.games.delete(message.channel.id);
 		const win = triplesWin || doublesWin;
+
+		this.client.games.delete(message.channel.id);
 
 		if (win) {
 			const profit = triplesWin ? triplesProfit : doublesProfit;
