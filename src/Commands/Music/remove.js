@@ -32,7 +32,7 @@ module.exports = class extends Command {
 			const noTrackGiven = new MessageEmbed()
 				.setDescription('Please provide a valid track to remove!')
 				.setColor(embed.color.error);
-			return message.channel.send(noTrackGiven);
+			return message.channel.send({ embeds: [noTrackGiven] });
 		}
 
 		queue.remove(trackNum);
@@ -40,7 +40,7 @@ module.exports = class extends Command {
 		const trackRemoved = new MessageEmbed()
 			.setDescription(`Successfully removed ${trackNum} from the queue!`)
 			.setColor(embed.color.default);
-		return message.channel.send(trackRemoved);
+		return message.channel.send({ embeds: [trackRemoved] });
 	}
 
 };
