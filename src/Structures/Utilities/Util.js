@@ -173,7 +173,8 @@ module.exports = class Util {
 			return memberToFind.user;
 		}
 
-		const fetchById = message.guild.members.cache.get(memberToFind);
+		const fetchById = this.client.users.fetch(memberToFind);
+
 
 		if (fetchById) {
 			return fetchById.user;
@@ -186,9 +187,7 @@ module.exports = class Util {
 			return findMyNickname.user;
 		}
 
-		if (returnToAuthor === true) {
-			return message.author;
-		}
+		return message.author;
 	}
 
 	userCooldown(message, command) {
