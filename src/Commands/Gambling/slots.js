@@ -98,7 +98,7 @@ module.exports = class extends Command {
 
 			slotEmbed.setDescription(`**${border}\n| ${randomSlots.join(' | ')} |\n${border}\n--- YOU LOSE ---**`);
 			slotEmbed.addFields(
-				{ name: 'Profit', value: `**${-bet}** credits`, inline: true },
+				{ name: 'Profit', value: `**-${bet}** credits`, inline: true },
 				{ name: 'Credits', value: `You have ${newBalance} credits`, inline: true });
 			slotEmbed.setColor(this.client.embed.color.error);
 
