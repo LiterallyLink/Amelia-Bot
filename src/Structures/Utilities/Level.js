@@ -69,16 +69,18 @@ module.exports = class Level {
 		return Math.floor(0.1 * Math.sqrt(user.xp -= xp)) < user.level;
 	}
 
-	async fetchLeaderboard(guild, limit) {
-		const users = await Levels.find({ guildId: guild.id }).sort([['xp', 'descending']]).exec();
+	async fetchLeaderboard(guildID, limit) {
+		const users = await Levels.find({ guildId: guildID }).sort([['xp', 'descending']]).exec();
+		console.log(users);
 
 		return users.slice(0, limit);
 	}
 
 	async fetchRank(userID, guildID) {
 		const rank = await Levels.find({ guildId: guildID }).sort([['xp', 'descending']]).exec();
+		const rankPosition = rank.findIndex(i => i.userId === userID) + 1;
 
-		return rank.findIndex(i => i.userId === userID) + 1;
+		return rankPosition;
 	}
 
 	xpFor(targetLevel) {
