@@ -38,7 +38,7 @@ module.exports = class Util {
 		return arr;
 	}
 
-	// removes duplicate properties ffrom arrays.
+	// removes duplicate properties from arrays.
 	removeDuplicates(arr) {
 		return [...new Set(arr)];
 	}
@@ -161,11 +161,11 @@ module.exports = class Util {
 		return Math.round(Math.random() * (max - min)) + min;
 	}
 
-	// eslint-disable-next-line consistent-return
-	getMember(message, memberToFind = '', returnToAuthor) {
-		if (!memberToFind && returnToAuthor === false) {
-			return false;
+	async getMember(message, memberToFind = '', returnToAuthor) {
+		if (!memberToFind && returnToAuthor === true) {
+			return message.author;
 		}
+
 
 		if (message.mentions.members.size !== 0) {
 			memberToFind = message.mentions.members.first();
@@ -173,7 +173,7 @@ module.exports = class Util {
 			return memberToFind.user;
 		}
 
-		const fetchById = this.client.users.fetch(memberToFind);
+		const fetchById = await this.client.users.fetch(memberToFind).catch(() => null);
 
 
 		if (fetchById) {
@@ -207,7 +207,7 @@ module.exports = class Util {
 
 			if (isCooldownOver) {
 				const timeLeft = (expirationTime - currentTime) / 1000;
-				message.reply(`${timeLeft.toFixed(1)}s`);
+				message.reply(`Please wait ${timeLeft.toFixed(1)}s to use ${command.name} again!`);
 				return isCooldownOver;
 			}
 		}
@@ -220,8 +220,11 @@ module.exports = class Util {
 	// Custom asynchronous message collection function
 	async createAsyncMessageCollector(options) {
 		const { msg, input, maxEntries, time } = options;
+
 		const filter = res => res.author.id === msg.author.id && input.includes(res.content.toLowerCase());
+
 		const caughtMessages = await msg.channel.awaitMessages({ filter, max: maxEntries, time: time });
+
 		return caughtMessages.size > 0 ? caughtMessages.first().content.toLowerCase() : false;
 	}
 
