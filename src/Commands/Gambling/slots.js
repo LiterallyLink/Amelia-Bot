@@ -84,7 +84,7 @@ module.exports = class extends Command {
 
 		if (win) {
 			const profit = triplesWin ? triplesProfit : doublesProfit;
-			const newBalance = await this.client.economy.addCredits(message.guild.id, message.author.id, profit);
+			const newBalance = await this.client.economy.addCredits(message.author.id, message.guild.id, profit);
 
 			slotEmbed.setDescription(`**${border}\n| ${randomSlots.join(' | ')} |\n${border}\n--- YOU WON ---**`);
 			slotEmbed.addFields(
@@ -94,7 +94,7 @@ module.exports = class extends Command {
 
 			return msg.edit({ embeds: [slotEmbed] });
 		} else {
-			const newBalance = await this.client.economy.addCredits(message.guild.id, message.author.id, -bet);
+			const newBalance = await this.client.economy.subtractCredits(message.author.id, message.guild.id, bet);
 
 			slotEmbed.setDescription(`**${border}\n| ${randomSlots.join(' | ')} |\n${border}\n--- YOU LOSE ---**`);
 			slotEmbed.addFields(
