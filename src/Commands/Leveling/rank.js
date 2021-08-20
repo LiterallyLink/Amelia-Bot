@@ -13,16 +13,17 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
-		const target = this.client.utils.getMember(message, args.join(' '), true);
+		const target = await this.client.utils.getMember(message, args.join(' '), true);
 
-		const user = await this.client.level.fetch(target.id, message.guild.id);
-
-		const neededXP = this.client.level.xpFor(parseInt(user.level) + 1);
+		const { level, xp } = await this.client.database.fetchUser(target.id, message.guild.id);
+		const guildRank = await this.client.level.fetchRank(target.id, message.guild.id);
+		const neededXP = await this.client.level.xpFor(parseInt(level) + 1);
 
 		const rankCard = new Rank()
-			.setAvatar(message.author.displayAvatarURL({ dynamic: true, format: 'png' }))
-			.setLevel(user.level)
-			.setCurrentXP(user.xp)
+			.setAvatar(target.displayAvatarURL({ dynamic: true, format: 'png' }))
+			.setLevel(level)
+			.setRank(guildRank)
+			.setCurrentXP(xp)
 			.setRequiredXP(neededXP)
 			.setProgressBar('#FFA500', 'COLOR')
 			.setUsername(target.username)
