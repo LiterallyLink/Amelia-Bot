@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js');
+const Profile = require('../../Models/profileSchema');
 
 module.exports = class Economy {
 
@@ -36,6 +37,13 @@ module.exports = class Economy {
 
 		wallet.credits = newBalance;
 		wallet.save().catch(err => console.log(err));
+	}
+
+	async fetchLeaderboard(guildId, limit) {
+		const users = await Profile.find({ guildId: guildId })
+			.sort([['credits', 'descending']]).exec();
+
+		return users.slice(0, limit);
 	}
 
 	async isValidPayment(message, bet) {
