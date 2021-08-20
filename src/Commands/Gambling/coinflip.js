@@ -1,0 +1,53 @@
+/* eslint-disable consistent-return */
+const Command = require('../../Structures/Command');
+const { MessageEmbed } = require('discord.js');
+const coinChoice = ['heads', 'tails'];
+
+module.exports = class extends Command {
+
+	constructor(...args) {
+		super(...args, {
+			aliases: ['coin', 'flip'],
+			category: 'Gambling',
+			usage: '(choice) (bet)',
+			args: true,
+			guildOnly: true
+		});
+	}
+
+	async run(message, [choice, bet]) {
+		if (!bet || !choice || !coinChoice.includes(choice.toLowerCase())) {
+			const howToPlayEmbed = new MessageEmbed()
+				.setTitle('How To Play')
+				.addField('Usage', `\`${this.usage}\``)
+				.setColor(this.client.embed.color.default);
+			return message.reply({ embeds: [howToPlayEmbed] });
+		}
+
+		const validBet = await this.client.economy.isValidPayment(message, bet);
+		if (!validBet) return;
+
+		const headsOrTails = this.client.utils.randomRange(1, 2) < 1 ? 'heads' : 'tails';
+
+		if (choice.toLowerCase() === headsOrTails) {
+			bet *= 2;
+
+			await this.client.economy.addCredits(message.author.id, message.guild.id, bet);
+
+			const userWonEmbed = new MessageEmbed()
+				.setDescription(`Congrats! You flipped ${headsOrTails}`)
+				.setFooter(`💸 You won ${bet} credits`)
+				.setColor(this.client.embed.color.success);
+			return message.channel.send({ embeds: [userWonEmbed] });
+		} else {
+			await this.client.economy.subtractCredits(message.author.id, message.guild.id, bet);
+
+			const userLostEmbed = new MessageEmbed()
+				.setDescription(`Uh oh. . .the coin landed on ${headsOrTails}`)
+				.setFooter(`You lost ${bet} credits`)
+				.setColor(this.client.embed.color.error);
+			return message.channel.send({ embeds: [userLostEmbed] });
+		}
+	}
+
+};
