@@ -15,7 +15,7 @@ module.exports = class extends Command {
 
 	async run(message, [target]) {
 		target = message.mentions.users.first() || message.author;
-		const credits = await this.client.economy.getCredits(message.guild.id, target.id);
+		const credits = await this.client.economy.getCredits(target.id, message.guild.id);
 
 		const balanceEmbed = new MessageEmbed()
 			.setAuthor(target.username, target.displayAvatarURL())
