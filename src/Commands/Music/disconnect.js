@@ -5,8 +5,8 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			aliases: ['filterlist'],
-			description: 'Provides a list of active filters',
+			aliases: ['leave'],
+			description: 'Disconnects from the voice channel and clears the queue.',
 			category: 'Music',
 			guildOnly: true
 		});
