@@ -1,4 +1,3 @@
-const Profile = require('../../Models/profileSchema');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class Economy {
@@ -7,61 +6,43 @@ module.exports = class Economy {
 		this.client = client;
 	}
 
-	async getCredits(guildID, userID) {
-		const wallet = await Profile.findOne({ guildId: guildID, userId: userID });
-
-		if (!wallet) {
-			const newData = new Profile({
-				guildId: guildID,
-				userId: userID,
-				credits: 0
-			});
-
-			await newData.save()
-				.catch(err => console.log(err));
-		}
+	async getCredits(userID, guildID) {
+		const wallet = await this.client.database.fetchUser(userID, guildID);
 
 		return wallet ? wallet.credits : 0;
 	}
 
 
-	async addCredits(guildID, userID, credits) {
-		const result = await Profile.findOneAndUpdate({
-			guildId: guildID,
-			userId: userID
-		}, {
-			guildId: guildID,
-			userId: userID,
-			$inc: {
-				credits
-			}
-		}, {
-			upsert: true,
-			new: true,
-			useFindAndModify: false
-		});
-		return result.credits;
+	async addCredits(userID, guildID, addCredits) {
+		const wallet = await this.client.database.fetchUser(userID, guildID);
+
+		wallet.credits += addCredits;
+		wallet.save().catch(err => console.log(err));
+
+		return wallet.credits;
 	}
 
-	async setCredits(guildId, userId, credits) {
-		const bal = await this.getCredits(guildId, userId);
-		await this.addCredits(guildId, userId, -bal);
-		const newBal = await this.addCredits(guildId, userId, credits);
-		return newBal;
+	async subtractCredits(userID, guildID, addCredits) {
+		const wallet = await this.client.database.fetchUser(userID, guildID);
+
+		wallet.credits -= addCredits;
+		wallet.save().catch(err => console.log(err));
+
+		return wallet.credits;
 	}
 
-	async fetchLeaderboard(guildId, limit) {
-		const users = await Profile.find({ guildId: guildId })
-			.sort([['credits', 'descending']])
-			.exec();
+	async setBalance(userID, guildID, newBalance) {
+		const wallet = await this.client.database.fetchUser(userID, guildID);
 
-		return users.slice(0, limit);
+		wallet.credits = newBalance;
+		wallet.save().catch(err => console.log(err));
 	}
 
 	async isValidPayment(message, bet) {
 		if (!bet) bet = 0.5;
 
-		const balance = await this.getCredits(message.guild.id, message.author.id);
+		const balance = await this.getCredits(message.author.id, message.guild.id);
+
 		// eslint-disable-next-line no-bitwise
 		const validPayment = !!(bet >>> 0 === parseFloat(bet) && bet <= balance);
 
