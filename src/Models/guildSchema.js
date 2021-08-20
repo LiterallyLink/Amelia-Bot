@@ -7,7 +7,7 @@ const guildSchema = new mongoose.Schema({
 	disabledModules: { type: Array, default: [] },
 	disabledCommands: { type: Array, default: [] },
 	prefix: { type: String, required: true, default: config.prefix },
-	xpSettings: { guildId: String, minXPGain: { type: Number, default: 1 }, maxXPGain: { type: Number, default: 30 } },
+	xpSettings: { minXPGain: { type: Number, default: 1 }, maxXPGain: { type: Number, default: 30 } },
 	levelUpMsg: { type: Boolean, default: true },
 	antiInvites: { type: Boolean, default: false },
 	antiLinks: { type: Boolean, default: false },
