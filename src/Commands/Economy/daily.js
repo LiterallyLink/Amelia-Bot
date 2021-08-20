@@ -12,7 +12,7 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
-		const user = await this.client.database.fetchUser(message.guild.id, message.author.id);
+		const user = await this.client.database.fetchUser(message.author.id, message.guild.id);
 
 		const lastClaimed = new Date(user.dailyClaimed);
 		const currentDate = new Date(Date.now());
@@ -22,7 +22,8 @@ module.exports = class extends Command {
             currentDate.getYear() !== lastClaimed.getYear()) {
 			const guild = await this.client.database.fetchGuild(message.guild);
 
-			user.credits += guild.dailyAmount;
+			await this.client.economy.addCredits(message.author.id, message.guild.id, guild.dailyAmount);
+
 			user.dailyClaimed = Date.now();
 			await user.save().catch(err => console.log(err));
 
