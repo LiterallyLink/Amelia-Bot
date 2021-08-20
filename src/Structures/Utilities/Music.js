@@ -41,14 +41,17 @@ module.exports = class Music {
 			minutes: 0,
 			seconds: 0
 		};
+
 		const occurences = str.replace(/[^:]/g, '').length;
 		const hours = occurences > 1;
 		let indexToGrab = 0;
 		const split = str.split(':');
+
 		if (hours) {
 			duration.hours = Number.parseInt(split[0]);
 			indexToGrab++;
 		}
+
 		duration.minutes = Number.parseInt(split[indexToGrab]);
 		duration.seconds = Number.parseInt(split[indexToGrab + 1]);
 		return duration;
@@ -60,6 +63,7 @@ module.exports = class Music {
 
 	durationAsString(duration) {
 		const secondDuration = this.getSeconds(duration) * 1000;
+
 		return this.client.utils.formatMS(secondDuration);
 	}
 
