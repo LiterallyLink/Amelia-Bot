@@ -14,7 +14,7 @@ module.exports = class Database {
 
 		if (!message.guild) return clientPrefix;
 
-		const settings = await this.fetchGuild(message.guild);
+		const settings = await this.fetchGuild(message.guild).catch(err => console.log(err));
 
 		if (settings) clientPrefix = settings.prefix;
 
@@ -24,7 +24,7 @@ module.exports = class Database {
 	async fetchUser(userID, guildID) {
 		const userProfile = await Profile.findOne({ userId: userID, guildId: guildID });
 
-		if (!userProfile) await this.createUserProfile(userID, guildID);
+		if (!userProfile) await this.createUserProfile(userID, guildID).catch(err => console.log(err));
 
 		return userProfile;
 	}
