@@ -37,7 +37,10 @@ module.exports = class extends Command {
         */
 
 		const validBet = await this.client.economy.isValidPayment(message, bet);
-		if (!validBet) return;
+
+		if (!validBet) {
+			return;
+		}
 
 		/* Checking in the games collection if the current
            channel has a game in progress already.
@@ -87,6 +90,7 @@ module.exports = class extends Command {
 
 		deck = this.createDeck(deck, values, suits);
 		players = this.createPlayers(players);
+
 		this.dealHands(deck, players);
 		this.getHands(playerHand, dealerHand, players);
 
@@ -98,107 +102,62 @@ module.exports = class extends Command {
 		message.channel.send({ embeds: [gameStartEmbed] });
 
 		while (!gameOver) {
-			const collectorOptions = {
-				msg: message,
-				input: validInput,
-				maxEntries: 1,
-				time: 60000
-			};
-
-			const userInput = await this.client.utils.createAsyncMessageCollector(collectorOptions);
+			const userInput = await this.client.utils.createAsyncMessageCollector(message, validInput, 1, 60000);
 
 			if (!userInput) {
 				this.client.games.delete(message.channel.id);
 				return message.reply(`The game has ended due to inactivity`);
 			}
 
-			switch (userInput) {
-				case 'hit': {
-					this.hitMe(0, playerHand, deck, players);
-					// this.autoSplit(players[0]);
+			if (userInput === 'hit') {
+				this.hitMe(0, playerHand, deck, players);
+				const handIsOver21 = this.userExceeded21(message, bet, players, playerHand, dealerHand);
 
-					if (this.userExceeded21(players, message, bet, playerHand, dealerHand)) {
-						await this.client.economy.addCredits(message.guild.id, message.author.id, -bet);
-						this.client.games.delete(message.channel.id);
-						gameOver = true;
-						break;
-					}
-
-					const drawCardEmbed = new MessageEmbed()
-						.setAuthor(`Blackjack - Bet ${bet}`, message.author.displayAvatarURL())
-						.setDescription(`**Your Hand: ${players[0].Points}\n${playerHand.join('')}\nThe dealer shows:**\n${dealerHand[0]}`)
-						.setFooter('Hit, Stay, Fold, Split, or Double?')
-						.setColor(this.client.embed.color.default);
-					message.channel.send({ embeds: [drawCardEmbed] });
+				if (handIsOver21 === true) {
+					gameOver = true;
 					break;
 				}
-				case 'double': {
-					this.hitMe(0, playerHand, deck, players);
 
-					if (this.userExceeded21(players, message, bet, playerHand, dealerHand)) {
-						await this.client.economy.addCredits(message.guild.id, message.author.id, -bet);
-						this.client.games.delete(message.channel.id);
-						gameOver = true;
-						break;
-					}
+				gameStartEmbed.setDescription(`**Your Hand: ${players[0].Points}\n${playerHand.join('')}\nThe dealer shows:**\n${dealerHand[0]}`);
 
-					this.dealerHand(players, dealerHand, deck);
+				message.channel.send({ embeds: [gameStartEmbed] });
+			} else if (userInput === 'double') {
+				this.hitMe(0, playerHand, deck, players);
+				bet *= 2;
+
+				const handIsOver21 = this.userExceeded21(message, bet, players, playerHand, dealerHand);
+
+				if (handIsOver21 === true) {
 					gameOver = true;
-					const userWinConditions = players[0].Points > players[1].Points || players[1].Points > 21;
-					const dealerWinConditions = players[0].Points < players[1].Points;
-
-					if (userWinConditions) {
-						bet *= 1.5;
-						await this.client.economy.addCredits(message.guild.id, message.author.id, bet);
-						this.userWonMessage(message, bet, players, playerHand, dealerHand);
-						break;
-					} else if (dealerWinConditions) {
-						await this.client.economy.addCredits(message.guild.id, message.author.id, -bet);
-						this.dealerWonMessage(message, bet, players, playerHand, dealerHand);
-						break;
-					} else {
-						this.gameTiedMessage(message, bet, players, playerHand, dealerHand);
-						break;
-					}
-				}
-				case 'stay':
-				case 'stand': {
-					this.dealerHand(players, dealerHand, deck);
-
-					gameOver = true;
-					this.client.games.delete(message.channel.id);
-					const userWinConditions = players[0].Points > players[1].Points || players[1].Points > 21;
-					const dealerWinConditions = players[0].Points < players[1].Points;
-
-					if (userWinConditions) {
-						bet *= 1.5;
-						await this.client.economy.addCredits(message.guild.id, message.author.id, bet);
-						this.userWonMessage(message, bet, players, playerHand, dealerHand);
-						break;
-					} else if (dealerWinConditions) {
-						await this.client.economy.addCredits(message.guild.id, message.author.id, -bet);
-						this.dealerWonMessage(message, bet, players, playerHand, dealerHand);
-						break;
-					} else {
-						this.gameTiedMessage(message, bet, players, playerHand, dealerHand);
-						break;
-					}
-				}
-				case 'fold': {
-					(bet /= -2).toFixed();
-					gameOver = true;
-					await this.client.economy.addCredits(message.guild.id, message.author.id, bet);
-
-					const foldEmbed = new MessageEmbed()
-						.setAuthor(`Blackjack - Bet ${bet}`, message.author.displayAvatarURL())
-						.setDescription(`**Your Hand: ${players[0].Points}\n${playerHand.join('')}\nDealer's cards: ${players[1].Points}**\n${dealerHand.join('')}`)
-						.setFooter(`🚫 Fold! - You Lost ${(bet / 2).toFixed()} Credits`)
-						.setColor('fce3b7');
-					message.channel.send({ embeds: [foldEmbed] });
 					break;
 				}
-				case 'split':
-					break;
+
+				this.dealerHand(players, dealerHand, deck);
+				gameOver = true;
+
+				await this.gameResult(message, bet, players, playerHand, dealerHand);
+				break;
+			} else if (userInput === 'stay' || userInput === 'stand') {
+				this.dealerHand(players, dealerHand, deck);
+
+				await this.gameResult(message, bet, players, playerHand, dealerHand);
+				gameOver = true;
+				break;
+			} else if (userInput === 'fold') {
+				const profit = Math.round(bet / 2);
+
+				await this.client.economy.subtractCredits(message.author.id, message.guild.id, profit);
+				this.client.games.delete(message.channel.id);
+
+				const foldEmbed = new MessageEmbed()
+					.setAuthor(`Blackjack - Bet ${bet}`, message.author.displayAvatarURL())
+					.setDescription(`**Your Hand: ${players[0].Points}\n${playerHand.join('')}\nDealer's cards: ${players[1].Points}**\n${dealerHand.join('')}`)
+					.setFooter(`🚫 Fold! - You Lost -${profit} Credits`)
+					.setColor(this.client.embed.color.default);
+				message.channel.send({ embeds: [foldEmbed] });
+
+				gameOver = true;
+				break;
 			}
 		}
 	}
@@ -209,13 +168,20 @@ module.exports = class extends Command {
 		for (let i = 0; i < values.length; i++) {
 			for (let j = 0; j < suits.length; j++) {
 				let weight = parseInt(values[i]);
-				if (values[i] === 'J' || values[i] === 'Q' || values[i] === 'K') { weight = 10; }
-				if (values[i] === 'A') { weight = 11; }
+				if (values[i] === 'J' || values[i] === 'Q' || values[i] === 'K') {
+					weight = 10;
+				}
+
+				if (values[i] === 'A') {
+					weight = 11;
+				}
+
 				const card = {
 					Value: values[i],
 					Suit: suits[j],
 					Weight: weight
 				};
+
 				deck.push(card);
 			}
 		}
@@ -246,6 +212,7 @@ module.exports = class extends Command {
 				Hand: hand,
 				Split: false
 			};
+
 			players.push(player);
 		}
 
@@ -307,33 +274,6 @@ module.exports = class extends Command {
 	//  // if (drewAnAce.length !== 0 && split === false);
 	// }
 
-	gameTiedMessage(message, bet, players, playerHand, dealerHand) {
-		const tiedGameEmbed = new MessageEmbed()
-			.setAuthor(`Blackjack - Bet ${bet}`, message.author.displayAvatarURL())
-			.setDescription(`**Your Hand: ${players[0].Points}\n${playerHand.join('')}\nDealer's cards: ${players[1].Points}**\n${dealerHand.join('')}`)
-			.setFooter(`It's a tie!`)
-			.setColor(this.client.embed.color.default);
-		return message.channel.send({ embeds: [tiedGameEmbed] });
-	}
-
-	dealerWonMessage(message, bet, players, playerHand, dealerHand) {
-		const dealerWonEmbed = new MessageEmbed()
-			.setAuthor(`Blackjack - Bet ${bet}`, message.author.displayAvatarURL())
-			.setDescription(`**Your Hand: ${players[0].Points}\n${playerHand.join('')}\nDealer's cards: ${players[1].Points}**\n${dealerHand.join('')}`)
-			.setFooter(`The dealer won! - You lost ${bet} credits`)
-			.setColor(this.client.embed.color.error);
-		message.channel.send({ embeds: [dealerWonEmbed] });
-	}
-
-	userWonMessage(message, bet, players, playerHand, dealerHand) {
-		const userWonEmbed = new MessageEmbed()
-			.setAuthor(`Blackjack - Bet ${bet}`, message.author.displayAvatarURL())
-			.setDescription(`**Your Hand: ${players[0].Points}\n${playerHand.join('')}\nDealer's cards: ${players[1].Points}**\n${dealerHand.join('')}`)
-			.setFooter(`💸 You won ${bet} credits!`)
-			.setColor(this.client.embed.color.green);
-		message.channel.send(userWonEmbed);
-	}
-
 	dealerHand(players, dealerHand, deck) {
 		while (players[0].Points > players[1].Points && players[1].Points <= 21) {
 			this.hitMe(1, dealerHand, deck, players);
@@ -341,17 +281,55 @@ module.exports = class extends Command {
 		}
 	}
 
-	userExceeded21(players, message, bet, playerHand, dealerHand) {
+	userExceeded21(message, bet, players, playerHand, dealerHand) {
 		if (players[0].Points > 21) {
+			this.client.games.delete(message.channel.id);
+
 			const bustEmbed = new MessageEmbed()
 				.setAuthor(`Blackjack - Bet ${bet}`, message.author.displayAvatarURL())
 				.setDescription(`**Your Hand: ${players[0].Points}\n${playerHand.join('')}\nThe dealer shows:**\n${dealerHand[0]}`)
 				.setFooter(`🚫 Bust! - You Lost ${bet} Credits`)
 				.setColor(this.client.embed.color.error);
-
 			message.channel.send({ embeds: [bustEmbed] });
+
 			return true;
 		}
+
+		return false;
+	}
+
+	async returnWinner(players, message, bet) {
+		const userWinConditions = players[0].Points > players[1].Points || players[1].Points > 21;
+		const dealerWinConditions = players[0].Points < players[1].Points;
+
+		const userWon = userWinConditions ? true : dealerWinConditions ? false : null;
+
+		if (userWon === true) {
+			await this.client.economy.addCredits(message.author.id, message.guild.id, bet);
+		} else if (userWon === false) {
+			await this.client.economy.subtractCredits(message.author.id, message.guild.id, bet);
+		}
+
+		return userWon;
+	}
+
+	async gameResult(message, bet, players, playerHand, dealerHand) {
+		const userWon = await this.returnWinner(players, message, bet);
+
+		const resultsEmbed = new MessageEmbed()
+			.setAuthor(`Blackjack - Bet ${bet}`, message.author.displayAvatarURL())
+			.setDescription(`**Your Hand: ${players[0].Points}\n${playerHand.join('')}\nDealer's cards: ${players[1].Points}**\n${dealerHand.join('')}`);
+
+		if (userWon === true) {
+			resultsEmbed.setFooter(`💸 You won ${bet} credits!`).setColor(this.client.embed.color.success);
+		} else if (userWon === false) {
+			resultsEmbed.setFooter(`The dealer won! - You lost ${bet} credits`).setColor(this.client.embed.color.error);
+		} else {
+			resultsEmbed.setFooter(`It's a tie!`).setColor(this.client.embed.color.default);
+		}
+
+		this.client.games.delete(message.channel.id);
+		return message.channel.send({ embeds: [resultsEmbed] });
 	}
 
 };
