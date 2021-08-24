@@ -57,21 +57,20 @@ module.exports = class Level {
 		return user;
 	}
 
-	async appendXP(userID, guildID, xp) {
+	async appendXP(userID, guildID, randomXp) {
 		const user = await this.client.database.fetchUser(userID, guildID);
 
-		user.xp += parseInt(xp, 10);
+		user.xp += randomXp;
 		user.level = Math.floor(0.1 * Math.sqrt(user.xp));
 		user.lastUpdated = new Date();
 
 		await user.save().catch(err => console.log(`Failed to append xp: ${err}`));
 
-		return Math.floor(0.1 * Math.sqrt(user.xp -= xp)) < user.level;
+		return Math.floor(0.1 * Math.sqrt(user.xp -= randomXp)) < user.level;
 	}
 
 	async fetchLeaderboard(guildID, limit) {
 		const users = await Levels.find({ guildId: guildID }).sort([['xp', 'descending']]).exec();
-		console.log(users);
 
 		return users.slice(0, limit);
 	}
