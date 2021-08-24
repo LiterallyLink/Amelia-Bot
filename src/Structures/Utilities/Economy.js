@@ -16,6 +16,7 @@ module.exports = class Economy {
 
 	async addCredits(userID, guildID, addCredits) {
 		const wallet = await this.client.database.fetchUser(userID, guildID);
+		addCredits = parseInt(addCredits);
 
 		wallet.credits += addCredits;
 		wallet.save().catch(err => console.log(err));
@@ -25,6 +26,7 @@ module.exports = class Economy {
 
 	async subtractCredits(userID, guildID, addCredits) {
 		const wallet = await this.client.database.fetchUser(userID, guildID);
+		addCredits = parseInt(addCredits);
 
 		wallet.credits -= addCredits;
 		wallet.save().catch(err => console.log(err));
@@ -34,6 +36,7 @@ module.exports = class Economy {
 
 	async setBalance(userID, guildID, newBalance) {
 		const wallet = await this.client.database.fetchUser(userID, guildID);
+		newBalance = parseInt(newBalance);
 
 		wallet.credits = newBalance;
 		wallet.save().catch(err => console.log(err));
@@ -52,7 +55,7 @@ module.exports = class Economy {
 		const balance = await this.getCredits(message.author.id, message.guild.id);
 
 		// eslint-disable-next-line no-bitwise
-		const validPayment = !!(bet >>> 0 === parseFloat(bet) && bet <= balance);
+		const validPayment = bet > 0 && bet % 1 === 0 && balance >= bet;
 
 		if (!validPayment) {
 			const howToPlayEmbed = new MessageEmbed()
