@@ -8,12 +8,13 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Provides the avatar of a specified user.',
 			category: 'Miscellaneous',
-			usage: '(userId), avatar (@user)'
+			usage: '(userId), avatar (@user)',
+			guildOnly: true
 		});
 	}
 
 	async run(message, args) {
-		const member = this.client.utils.getMember(message, args.join(' '), true);
+		const member = await this.client.utils.getMember(message, args.join(' '), true);
 
 		const displayAvatarEmbed = new MessageEmbed()
 			.setAuthor(`${member.username}'s profile picture`)
