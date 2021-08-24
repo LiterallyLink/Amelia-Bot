@@ -227,7 +227,11 @@ module.exports = class Util {
 	}
 
 	async buttonCollector(message, collectorMsg, collectorTime) {
-		const optionFilter = i => i.user.id === message.author.id;
+		const optionFilter = i => {
+			i.deferUpdate();
+			return i.user.id === message.author.id;
+		};
+
 		const optionID = await collectorMsg.awaitMessageComponent({ filter: optionFilter, time: collectorTime })
 			.then(interaction => interaction.customId)
 			.catch(() => null);
