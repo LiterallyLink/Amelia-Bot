@@ -30,9 +30,7 @@ module.exports = class extends Command {
 		const headsOrTails = this.client.utils.randomRange(1, 2) < 1 ? 'heads' : 'tails';
 
 		if (choice.toLowerCase() === headsOrTails) {
-			bet *= 2;
-
-			await this.client.economy.addCredits(message.author.id, message.guild.id, bet);
+			await this.client.economy.addCredits(message.author.id, message.guild.id, bet * 2);
 
 			const userWonEmbed = new MessageEmbed()
 				.setDescription(`Congrats! You flipped ${headsOrTails}`)
