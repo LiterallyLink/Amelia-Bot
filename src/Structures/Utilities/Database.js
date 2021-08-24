@@ -22,28 +22,31 @@ module.exports = class Database {
 	}
 
 	async fetchUser(userID, guildID) {
-		const userProfile = await Profile.findOne({ userId: userID, guildId: guildID });
+		let userProfile = await Profile.findOne({ userId: userID, guildId: guildID });
 
-		if (!userProfile) await this.createUserProfile(userID, guildID).catch(err => console.log(err));
-
+		if (!userProfile) {
+			userProfile = await this.createUserProfile(userID, guildID).catch(err => console.log(err));
+		}
 		return userProfile;
 	}
 
 	async createUserProfile(userID, guildID) {
-		const newUser = new Profile({
+		const newProfile = new Profile({
 			userId: userID,
 			guildId: guildID
 		});
 
-		await newUser.save().catch(err => console.log(`Failed to create user: ${err}`));
+		const newUser = await newProfile.save().catch(err => console.log(`Failed to create user: ${err}`));
+
+		return newUser;
 	}
 
 	async fetchGuild(guild) {
-		const server = await GuildSchema.findOne({ guildID: guild.id }, (err) => {
+		let server = await GuildSchema.findOne({ guildID: guild.id }, (err) => {
 			if (err) console.error(err);
 		});
 
-		if (!server) await this.guildSchemaCreate(guild);
+		if (!server) server = await this.guildSchemaCreate(guild);
 
 		return server;
 	}
@@ -57,6 +60,8 @@ module.exports = class Database {
 		newGuild.save()
 			.then(result => console.log(result))
 			.catch(error => console.error(error));
+
+		return newGuild;
 	}
 
 };
