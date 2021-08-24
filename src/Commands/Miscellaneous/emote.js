@@ -9,7 +9,8 @@ module.exports = class extends Command {
 			aliases: ['emotes', 'emoji', 'emojis'],
 			description: 'Provides information about the guilds emotes.',
 			category: 'Miscellaneous',
-			usage: ', emotes (emote)'
+			usage: ', emotes (emote)',
+			guildOnly: true
 		});
 	}
 
