@@ -1,4 +1,5 @@
 const Command = require('../../Structures/Command');
+const emotes = require('../../../assets/jsons/emotes.json');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
@@ -52,7 +53,7 @@ module.exports = class extends Command {
 		let moduleList = '';
 
 		for (let i = 0; i < categories.length; i++) {
-			moduleList += `${categories[i]} ${enabled.includes(categories[i]) ? '✅' : '❌'}\n`;
+			moduleList += `${categories[i]} ${enabled.includes(categories[i]) ? emotes.onSwitch : emotes.offSwitch}\n`;
 		}
 
 		const moduleEmbed = new MessageEmbed()
