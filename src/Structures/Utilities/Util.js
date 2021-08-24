@@ -218,14 +218,21 @@ module.exports = class Util {
 
 
 	// Custom asynchronous message collection function
-	async createAsyncMessageCollector(options) {
-		const { msg, input, maxEntries, time } = options;
+	async createAsyncMessageCollector(message, input, maxEntries, time) {
+		const filter = res => res.author.id === message.author.id && input.includes(res.content.toLowerCase());
 
-		const filter = res => res.author.id === msg.author.id && input.includes(res.content.toLowerCase());
-
-		const caughtMessages = await msg.channel.awaitMessages({ filter, max: maxEntries, time: time });
+		const caughtMessages = await message.channel.awaitMessages({ filter, max: maxEntries, time: time });
 
 		return caughtMessages.size > 0 ? caughtMessages.first().content.toLowerCase() : false;
+	}
+
+	async buttonCollector(message, collectorMsg, collectorTime) {
+		const optionFilter = i => i.user.id === message.author.id;
+		const optionID = await collectorMsg.awaitMessageComponent({ filter: optionFilter, time: collectorTime })
+			.then(interaction => interaction.customId)
+			.catch(() => null);
+
+		return optionID;
 	}
 
 	// Loads and sets all commands to a collection for the bot to interpret.
