@@ -1,6 +1,7 @@
 /* eslint-disable consistent-return */
 const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
+const { QueryType } = require('discord-player');
 
 module.exports = class extends Command {
 
@@ -22,7 +23,10 @@ module.exports = class extends Command {
 		const { player, embed } = this.client;
 
 		const searchResult = await player.search(args.join(' '), {
-			requestedBy: message.author
+			requestedBy: message.author,
+			searchEngine: QueryType.AUTO
+		}).catch(() => {
+			console.log('he');
 		});
 
 		if (!searchResult || !searchResult.tracks.length) {
@@ -32,7 +36,7 @@ module.exports = class extends Command {
 			return message.reply({ embeds: [songNotFound] });
 		}
 
-		const queue = player.createQueue(message.guild, {
+		const queue = await player.createQueue(message.guild, {
 			enableLive: true,
 			leaveOnEnd: false,
 			leaveOnEmptyCooldown: 200000,
