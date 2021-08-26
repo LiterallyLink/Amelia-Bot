@@ -27,7 +27,7 @@ module.exports = class extends Command {
 			return message.channel.send({ embeds: [noQueue] });
 		}
 
-		queue.shuffle();
+		await queue.shuffle();
 
 		const queueShuffledEmbed = new MessageEmbed()
 			.setDescription('Shuffled the Queue!')
