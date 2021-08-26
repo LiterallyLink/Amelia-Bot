@@ -27,10 +27,11 @@ module.exports = class extends Command {
 			return message.channel.send({ embeds: [noQueue] });
 		}
 
+		const currentTrack = queue.current;
 		queue.skip();
 
 		const skippedSong = new MessageEmbed()
-			.setDescription('Skipped!')
+			.setDescription(`Skipped! **${currentTrack}**!`)
 			.setColor(embed.color.default);
 		return message.channel.send({ embeds: [skippedSong] });
 	}
