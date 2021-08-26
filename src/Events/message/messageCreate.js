@@ -6,6 +6,7 @@ module.exports = class extends Event {
 
 	async run(message) {
 		if (message.author.bot) return;
+
 		const { user, commands, aliases, utils, database, level, embed, defaultPerms } = this.client;
 
 		const prefixRegexp = RegExp(`^<@!?${user.id}> `);
