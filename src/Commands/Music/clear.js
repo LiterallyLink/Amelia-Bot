@@ -32,7 +32,7 @@ module.exports = class extends Command {
 			.setColor(embed.color.default);
 		message.channel.send({ embeds: [clearedQueue] });
 
-		return queue.clear();
+		queue.clear();
 	}
 
 };
