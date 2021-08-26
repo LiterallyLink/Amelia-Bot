@@ -9,7 +9,7 @@ module.exports = class AmeliaClient extends Client {
 
 	constructor(options = {}) {
 		super({
-			intents: new Intents(14023),
+			intents: new Intents(14287),
 			allowedMentions: {
 				parse: ['users']
 			}

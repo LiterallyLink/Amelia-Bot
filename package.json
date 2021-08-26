@@ -16,7 +16,7 @@
     "aki-api": "^6.0.7",
     "canvacord": "^5.2.3",
     "discord-player": "^5.0.2",
-    "discord.js": "^13.0.0-dev.t1628124537.3eb4140",
+    "discord.js": "^13.1.0",
     "glob": "^7.1.7",
     "jshint": "^2.13.0",
     "moment": "^2.29.1",
