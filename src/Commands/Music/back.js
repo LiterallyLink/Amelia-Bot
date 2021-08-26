@@ -21,14 +21,14 @@ module.exports = class extends Command {
 
 		const queue = player.getQueue(message.guild.id);
 
-		if (!queue && !queue.previousTracks[0]) {
+		if (!queue && !queue.playing) {
 			const noQueue = new MessageEmbed()
 				.setDescription('There is no previous song to play')
 				.setColor(embed.color.default);
 			return message.channel.send({ embeds: [noQueue] });
 		}
 
-		queue.back();
+		await queue.back();
 
 		const previousSongEmbed = new MessageEmbed()
 			.setDescription('Successfully playing the previous song!')
