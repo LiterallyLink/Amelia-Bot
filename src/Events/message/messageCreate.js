@@ -16,7 +16,7 @@ module.exports = class extends Event {
 		const mentionRegex = RegExp(`^<@!?${user.id}>$`);
 
 		if (message.content.match(mentionRegex)) {
-			return message.reply(`To use a command, use the current prefix \`${prefix}\`, or use my mention as the prefix.`);
+			return message.reply({ context: `To use a command, use the current prefix \`${prefix}\`, or use my mention as the prefix.` });
 		}
 
 		if (message.guild && !message.content.startsWith(prefix)) {
@@ -48,7 +48,7 @@ module.exports = class extends Event {
 					.setColor(embed.color.default)
 					.setDescription(`The command ${command.name} or command module ${command.category} is currently disabled`)
 					.setFooter(`To enable and disable bot features, use ${prefix}help module`);
-				return message.reply(disabledModuleEmbed);
+				return message.reply({ embeds: [disabledModuleEmbed] });
 			}
 
 			const userPermCheck = command.userPerms ? defaultPerms.add(command.userPerms) : defaultPerms;
@@ -63,8 +63,7 @@ module.exports = class extends Event {
 						.setThumbnail(embed.thumbnails.ameShake)
 						.addField('To run this command, you need these permissions.', `${utils.formatArray(missingUserPermissions.map(utils.formatPermissions))}`)
 						.setColor(embed.color.error);
-					return message.reply(missingPermissionsEmbed)
-						.then(msg => msg.delete({ timeout: 10000 }));
+					return message.reply({ embeds: [missingPermissionsEmbed] });
 				}
 			}
 
@@ -77,8 +76,7 @@ module.exports = class extends Event {
 						.setThumbnail(embed.thumbnails.ameShake)
 						.addField('To run this command, I need these permissions.', `${utils.formatArray(missingBotPermissions.map(utils.formatPermissions))}`)
 						.setColor(embed.color.error);
-					return message.reply(missingPermissionsEmbed)
-						.then(msg => msg.delete({ timeout: 10000 }));
+					return message.reply({ embeds: [missingPermissionsEmbed] });
 				}
 			}
 		}
