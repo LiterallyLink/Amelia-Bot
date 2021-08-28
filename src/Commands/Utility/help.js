@@ -11,11 +11,10 @@ module.exports = class extends Command {
 		});
 	}
 
-	async run(message, [query]) {
+	async run(message, [query], prefix) {
 		const { commands, aliases, embed } = this.client;
 		const commandList = commands.map(cmd => cmd.name);
 		let categories = this.client.utils.removeDuplicates(commands.map(cmd => cmd.category));
-		const prefix = await this.client.database.getPrefix(message);
 
 		if (!this.client.utils.checkOwner(message.author)) {
 			categories = categories.filter(category => category !== 'Developer');
