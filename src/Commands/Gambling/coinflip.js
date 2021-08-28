@@ -9,7 +9,7 @@ module.exports = class extends Command {
 		super(...args, {
 			aliases: ['coin', 'flip'],
 			category: 'Gambling',
-			usage: '(choice) (bet)',
+			usage: '(heads or tails) (bet)',
 			args: true,
 			guildOnly: true
 		});
@@ -18,7 +18,7 @@ module.exports = class extends Command {
 	async run(message, [choice, bet]) {
 		if (!bet || !choice || !coinChoice.includes(choice.toLowerCase())) {
 			const howToPlayEmbed = new MessageEmbed()
-				.setTitle('How To Play')
+				.setTitle('How To Play Coinflip!')
 				.addField('Usage', `\`${this.usage}\``)
 				.setColor(this.client.embed.color.default);
 			return message.reply({ embeds: [howToPlayEmbed] });
