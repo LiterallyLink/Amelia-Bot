@@ -6,7 +6,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			description: 'Enables and disables modules',
+			description: 'Enable and disable modules.',
 			category: 'Server Core',
 			usage: 'enable (category), module disable (category)',
 			userPerms: ['ADMINISTRATOR'],
