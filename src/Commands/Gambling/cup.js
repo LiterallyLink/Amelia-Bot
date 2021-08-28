@@ -1,6 +1,8 @@
+/* eslint-disable consistent-return */
 const Command = require('../../Structures/Command');
 const { MessageEmbed, MessageButton, MessageActionRow } = require('discord.js');
-const cupArr = ['Cup 1', 'Cup 2', 'Cup 3'];
+const cupGif = require('../../../assets/jsons/ameCup.json');
+const cupArr = ['Cup1', 'Cup2', 'Cup3'];
 
 module.exports = class extends Command {
 
@@ -14,42 +16,67 @@ module.exports = class extends Command {
 	}
 
 	async run(message, [bet]) {
+		if (!bet) {
+			const howToPlayEmbed = new MessageEmbed()
+				.setTitle('How To Play')
+				.setImage(cupGif.random)
+				.setDescription(``)
+				.addField('Usage', `${this.usage}`)
+				.setColor(this.client.embed.color.default);
+			return message.reply({ embeds: [howToPlayEmbed] });
+		}
+
+		const validBet = await this.client.economy.isValidPayment(message, bet);
+
+		if (!validBet) {
+			return;
+		}
+
 		const row = new MessageActionRow()
 			.addComponents(
 				new MessageButton()
-					.setCustomId('Cup 1')
+					.setCustomId('Cup1')
 					.setLabel('Cup 1')
 					.setStyle('DANGER'),
 
 				new MessageButton()
-					.setCustomId('Cup 2')
+					.setCustomId('Cup2')
 					.setLabel('Cup 2')
 					.setStyle('DANGER'),
 
 				new MessageButton()
-					.setCustomId('Cup 3')
+					.setCustomId('Cup3')
 					.setLabel('Cup 3')
 					.setStyle('DANGER')
 			);
 
 		const cupEmbed = new MessageEmbed()
-			.setImage('https://i.ibb.co/cCWyWJX/ame-Cup-Game.gif')
+			.setImage(cupGif.random)
 			.setFooter('Which cup is Ame hiding in?')
 			.setColor(this.client.embed.color.default);
 		const cupMsg = await message.channel.send({ embeds: [cupEmbed], components: [row] });
 
-		const buttonFilter = i => i.user.id === message.author.id;
-		const cupID = await cupMsg.awaitMessageComponent({ buttonFilter, time: 60000 }).then(interaction => interaction.customId);
+		const cupID = await this.client.utils.buttonCollector(message, cupMsg, 60000);
 		const randomCup = cupArr[this.client.utils.randomRange(1, cupArr.length) - 1];
 
+		if (!cupID) {
+			return message.reply('The game has ended due to inactivity.');
+		}
+
 		if (cupID === randomCup) {
+			await this.client.economy.addCredits(message.author.id, message.guild.id, bet);
+
 			const youWonEmbed = new MessageEmbed()
+				.setImage(cupGif[randomCup])
 				.setDescription(`Congrats! Ame was hiding under ${randomCup}!`)
 				.setFooter(`💸 You won ${bet} credits!`)
 				.setColor(this.client.embed.color.success);
 			return cupMsg.edit({ embeds: [youWonEmbed], components: [] });
 		} else {
+			await this.client.economy.subtractCredits(message.author.id, message.guild.id, bet);
+
 			const youLostEmbed = new MessageEmbed()
+				.setImage(cupGif[randomCup])
 				.setDescription(`Too bad! Ame was hiding under ${randomCup}. . .`)
 				.setFooter(`💸 You lost ${bet} credits. . .`)
 				.setColor(this.client.embed.color.error);
