@@ -7,7 +7,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			description: 'Provides a link to invite the bot to your guild',
+			description: 'Generates an invite URL to invite Amelia to your guild',
 			category: 'Utility'
 		});
 	}
