@@ -7,7 +7,7 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			description: "Set's a new server prefix",
-			category: 'Server Core',
+			category: 'Settings',
 			usage: '(new prefix)',
 			userPerms: ['ADMINISTRATOR'],
 			guildOnly: true
