@@ -7,7 +7,7 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			description: 'Enable and disable modules.',
-			category: 'Server Core',
+			category: 'Settings',
 			usage: 'enable (category), module disable (category)',
 			userPerms: ['ADMINISTRATOR'],
 			guildOnly: true
@@ -17,7 +17,7 @@ module.exports = class extends Command {
 	async run(message, [enabledOrDisabled, module]) {
 		const guild = await this.client.database.fetchGuild(message.guild);
 		const categories = this.client.utils.removeDuplicates(this.client.commands
-			.filter(cmd => cmd.category !== 'Developer' && cmd.category !== 'Server Core' && cmd.category !== 'Utility')
+			.filter(cmd => cmd.category !== 'Developer' && cmd.category !== 'Settings' && cmd.category !== 'Utility')
 			.map(cmd => cmd.category));
 
 		const { disabledModules } = guild;
