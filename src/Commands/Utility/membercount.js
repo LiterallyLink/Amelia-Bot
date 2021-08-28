@@ -6,7 +6,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			description: 'Provides the total number of members',
+			description: 'Provides the total number of members in the server.',
 			category: 'Utility',
 			guildOnly: true
 		});
@@ -64,9 +64,8 @@ module.exports = class extends Command {
 		ctx.beginPath();
 		ctx.lineWidth = '3';
 		ctx.strokeStyle = '#7b8085';
-		ctx.fillStyle = '#1b2228';
 		ctx.rect(rectXPos, rectYPos, rectWidth, rectHeight);
-		ctx.fillStyle = '1c2229';
+		ctx.fillStyle = '#1c2229';
 		ctx.fillRect(rectXPos, rectYPos, rectWidth, rectHeight);
 		ctx.stroke();
 		ctx.closePath();
@@ -79,26 +78,38 @@ module.exports = class extends Command {
 		const cy = canvas.height / 2;
 
 		for (let i = 0; i < statusData.length; i++) {
-			ctx.fillStyle = statusData[i].color;
-			ctx.lineWidth = 1;
-			ctx.strokeStyle = '#000000';
-			ctx.beginPath();
+			if (statusData[i].amount > 0) {
+				ctx.fillStyle = statusData[i].color;
+				ctx.lineWidth = 1;
+				ctx.strokeStyle = '#1c2229';
+				ctx.beginPath();
 
-			const endAngle = ((statusData[i].amount / totalMembers) * Math.PI * 2) + startAngle;
+				const endAngle = ((statusData[i].amount / totalMembers) * Math.PI * 2) + startAngle;
 
-			ctx.moveTo(cx, cy);
-			ctx.arc(cx, cy, radius, startAngle, endAngle, false);
-			ctx.lineTo(cx, cy);
-			ctx.fill();
-			// ctx.stroke();
-			ctx.closePath();
-			ctx.beginPath();
-			ctx.closePath();
+				ctx.moveTo(cx, cy);
+				ctx.arc(cx, cy, radius, startAngle, endAngle, false);
+				ctx.lineTo(cx, cy);
+				ctx.fill();
+				ctx.stroke();
+				ctx.closePath();
 
-			startAngle = endAngle;
+				ctx.beginPath();
+				ctx.font = '18px uni sans';
+				ctx.textAlign = 'center';
+				ctx.fillStyle = 'white';
 
-			// ctx.stroke();
+				const theta = (startAngle + endAngle) / 2;
+				const deltaY = Math.sin(theta) * 1.3 * radius;
+				const deltaX = Math.cos(theta) * 1.5 * radius;
+				ctx.fillText(`${(100 * statusData[i].amount / totalMembers).toFixed(2)}%`, deltaX + cx, deltaY + cy);
+				ctx.closePath();
+
+
+				startAngle = endAngle;
+			}
 		}
+
+		this.createDoughnutChart(ctx, cx, cy);
 	}
 
 	createStatusOverlay(ctx, statusData, totalMembers) {
@@ -115,12 +126,22 @@ module.exports = class extends Command {
 			ctx.closePath();
 
 			const { status, amount } = statusData[i];
-			ctx.font = '20px uni sans';
+			ctx.font = 'Sans Not-Rotated 20px';
+			ctx.textAlign = 'start';
 			ctx.fillStyle = 'white';
 
 			ctx.fillText(`${status} - ${amount} (${(100 * amount / totalMembers).toFixed(2)}%)`, statusBoxX + 30, statusBoxY + 15);
 			statusBoxY += 30;
 		}
+	}
+
+	createDoughnutChart(ctx, centerX, centerY) {
+		ctx.beginPath();
+		ctx.moveTo(centerX, centerY);
+		ctx.arc(centerX, centerY, 50, 0, 2 * Math.PI);
+		ctx.fillStyle = '#1c2229';
+		ctx.fill();
+		ctx.closePath();
 	}
 
 };
