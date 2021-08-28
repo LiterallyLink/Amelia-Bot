@@ -5,7 +5,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			description: 'Provides the picture of the guild.',
+			description: 'Provides the icon of the guild.',
 			category: 'Miscellaneous',
 			guildOnly: true
 		});
