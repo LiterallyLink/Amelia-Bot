@@ -8,7 +8,7 @@ module.exports = class extends Command {
 		super(...args, {
 			aliases: ['voiceping', 'voicechannelping'],
 			description: "Provides the latency and ws of the Ame's voice connection!",
-			category: 'Music',
+			category: 'Utility',
 			guildOnly: true
 		});
 	}
