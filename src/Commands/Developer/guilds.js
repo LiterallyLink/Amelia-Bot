@@ -12,16 +12,15 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
-		const servers = message.client.guilds.cache.array()
-			.map(guild => `\`${guild.id}\` - **${guild.name}** - \`${guild.members.cache.size}\` members`);
+		const servers = message.client.guilds.cache.map(guild => `\`${guild.id}\` - **${guild.name}** - \`${guild.members.cache.size}\` members`);
 
-		const embed = new MessageEmbed()
+		const guildListEmbed = new MessageEmbed()
 			.setTitle('List Of Guilds:')
-			.setDescription(servers)
+			.setDescription(`${servers.join('\n')}`)
 			.setFooter(`Amelia is in a total of ${this.client.guilds.cache.size} guild(s)`)
 			.setColor(this.client.embed.color.default)
 			.setTimestamp();
-		message.channel.send(embed);
+		message.channel.send({ embeds: [guildListEmbed] });
 	}
 
 };
