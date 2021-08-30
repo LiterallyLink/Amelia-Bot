@@ -58,6 +58,7 @@ module.exports = class extends Command {
 			const defaultHelpMenu = new MessageEmbed()
 				.setAuthor("Amelia's Help Menu", this.client.user.displayAvatarURL())
 				.setThumbnail(embed.thumbnails.ameRead)
+				.setFooter(`For more information, use ${prefix}help (category) or ${prefix}help (command)`)
 				.setColor(embed.color.default);
 
 			for (const category of categories) {
