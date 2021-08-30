@@ -5,6 +5,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
+			aliases: ['rl'],
 			description: 'Reloads specific commands',
 			category: 'Developer',
 			usage: '<command>',
