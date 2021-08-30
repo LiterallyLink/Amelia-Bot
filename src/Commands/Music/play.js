@@ -54,8 +54,11 @@ module.exports = class extends Command {
 			return await message.reply({ embeds: [unableToJoinVC] });
 		}
 
-		// eslint-disable-next-line no-unused-expressions
-		searchResult.playlist ? queue.addTracks(searchResult.tracks) : queue.addTrack(searchResult.tracks[0]);
+		if (searchResult.playlist) {
+			await queue.addTracks(searchResult.tracks);
+		} else {
+			await queue.addTrack(searchResult.tracks[0]);
+		}
 
 		if (!queue.playing) await queue.play();
 	}
