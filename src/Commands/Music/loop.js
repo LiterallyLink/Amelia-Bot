@@ -22,7 +22,7 @@ module.exports = class extends Command {
 
 		const queue = player.getQueue(message.guild.id);
 
-		if (!queue || !queue.playing) {
+		if (!queue) {
 			const noQueue = new MessageEmbed()
 				.setDescription('The server queue is currently empty')
 				.setColor(embed.color.default);
