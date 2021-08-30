@@ -28,17 +28,18 @@ module.exports = class extends Command {
 			return message.channel.send({ embeds: [noQueue] });
 		}
 
-		if (!trackNum || !queue.tracks[trackNum - 1]) {
+		trackNum -= 1;
+
+		if (!trackNum || !queue.tracks[trackNum]) {
 			const noTrackGiven = new MessageEmbed()
 				.setDescription('Please provide a valid track to skip to.')
 				.setColor(embed.color.error);
 			return message.channel.send({ embeds: [noTrackGiven] });
 		}
 
-		const trackToJumpTo = trackNum - 1;
-		const trackInfo = queue.tracks[trackToJumpTo];
+		const trackInfo = queue.tracks[trackNum];
 
-		queue.jump(trackToJumpTo);
+		queue.jump(trackNum);
 
 		const skippedSong = new MessageEmbed()
 			.setDescription(`Skipped to [${trackInfo.title}](${trackInfo.url})`)
