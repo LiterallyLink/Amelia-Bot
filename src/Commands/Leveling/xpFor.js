@@ -13,7 +13,7 @@ module.exports = class extends Command {
 	}
 
 	async run(message, [number], prefix) {
-		if (Number.isInteger(number) && number >= 0) {
+		if (Number.isInteger(parseInt(number)) && number >= 0) {
 			const xpToLevel = this.client.level.xpFor(number);
 			const users = await this.client.database.fetchUser(message.author.id, message.guild.id);
 			const xpToLevelAtCurrentLevel = xpToLevel - users.xp;
