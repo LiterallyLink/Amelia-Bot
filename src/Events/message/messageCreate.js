@@ -16,7 +16,7 @@ module.exports = class extends Event {
 		const mentionRegex = RegExp(`^<@!?${user.id}>$`);
 
 		if (message.content.match(mentionRegex)) {
-			return message.reply({ context: `To use a command, use the current prefix \`${prefix}\`, or use my mention as the prefix.` });
+			return message.reply({ content: `To use a command, use the current prefix \`${prefix}\`, or use my mention as the prefix.` });
 		}
 
 		if (message.guild && !message.content.startsWith(prefix)) {
