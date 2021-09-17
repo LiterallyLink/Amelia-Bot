@@ -33,12 +33,10 @@ module.exports = class extends Event {
 			return;
 		}
 
-		const ownerOnlyCommand = command.ownerOnly && !utils.checkOwner(message.author);
-		const guildOnlyCommand = command.guildOnly && !message.guild;
-		const isCommandOnCooldown = utils.userCooldown(message, command);
-		const commandRequiresArguments = utils.commandRequiresArguments(message, command, args);
-
-		if (ownerOnlyCommand || guildOnlyCommand || commandRequiresArguments || isCommandOnCooldown) return;
+		if (command.devOnly && !utils.userIsADev(message.author)) return;
+		if (command.guildOnly && !message.guild) return;
+		if (utils.userCooldown(message, command)) return;
+		if (utils.commandRequiresArguments(message, command, args)) return;
 
 		if (message.guild) {
 			const guild = await database.fetchGuild(message.guild);
