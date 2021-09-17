@@ -37,9 +37,10 @@ module.exports = class extends Command {
 		}
 
 		const queue = await player.createQueue(message.guild, {
-			enableLive: true,
 			leaveOnEnd: false,
+			leaveOnEmpty: true,
 			leaveOnEmptyCooldown: 200000,
+			bufferingTimeout: 2000,
 			metadata: { channel: message.channel }
 		});
 
@@ -51,7 +52,7 @@ module.exports = class extends Command {
 			const unableToJoinVC = new MessageEmbed()
 				.setDescription('I was unable to join your voice channel.')
 				.setColor(embed.color.error);
-			return await message.reply({ embeds: [unableToJoinVC] });
+			return message.reply({ embeds: [unableToJoinVC] });
 		}
 
 		if (searchResult.playlist) {
