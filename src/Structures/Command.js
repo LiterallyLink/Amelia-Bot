@@ -12,7 +12,7 @@ module.exports = class Command {
 		this.userPerms = new Permissions(options.userPerms).freeze();
 		this.botPerms = new Permissions(options.botPerms).freeze();
 		this.guildOnly = options.guildOnly || false;
-		this.ownerOnly = options.ownerOnly || false;
+		this.devOnly = options.developers || false;
 		this.nsfw = options.nsfw || false;
 		this.args = options.args || false;
 	}
