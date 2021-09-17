@@ -25,8 +25,9 @@ module.exports = class Database {
 		let userProfile = await Profile.findOne({ userId: userID, guildId: guildID });
 
 		if (!userProfile) {
-			userProfile = await this.createUserProfile(userID, guildID).catch(err => console.log(err));
+			userProfile = await this.createUserProfile(userID, guildID);
 		}
+
 		return userProfile;
 	}
 
@@ -36,7 +37,7 @@ module.exports = class Database {
 			guildId: guildID
 		});
 
-		const newUser = await newProfile.save().catch(err => console.log(`Failed to create user: ${err}`));
+		const newUser = await newProfile.save().catch(err => console.log(err));
 
 		return newUser;
 	}
