@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 const AmeliaClient = require('./Structures/AmeliaClient');
 const { Player } = require('discord-player');
 const config = require('../config.json');
