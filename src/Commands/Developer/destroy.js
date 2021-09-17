@@ -7,7 +7,7 @@ module.exports = class extends Command {
 			aliases: ['exit', 'shutdown', 'annihilate', 'obliterate'],
 			description: "Shut's the bot off",
 			category: 'Developer',
-			ownerOnly: true
+			devOnly: true
 		});
 	}
 

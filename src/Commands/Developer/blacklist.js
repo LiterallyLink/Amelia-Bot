@@ -9,12 +9,12 @@ module.exports = class extends Command {
 			usage: 'add <user>, blacklist remove <user>',
 			category: 'Developer',
 			description: 'Blacklists a user from using the bot.',
-			ownerOnly: true
+			devOnly: true
 		});
 	}
 
 	async run(message, [blacklistBoolean, userID]) {
-		const user = this.client.utils.getMember(message, userID, false);
+		const user = await this.client.utils.getMember(message, userID, false);
 
 		if (!user) {
 			let blacklistedUsers = await this.client.database.fetchBlacklisted();

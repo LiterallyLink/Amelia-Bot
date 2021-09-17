@@ -9,7 +9,7 @@ module.exports = class extends Command {
 			description: 'Reloads specific commands',
 			category: 'Developer',
 			usage: '<command>',
-			ownerOnly: true
+			devOnly: true
 		});
 	}
 

@@ -7,7 +7,7 @@ module.exports = class extends Command {
 		super(...args, {
 			description: "Provides all guild's the bot is currently in.",
 			category: 'Developer',
-			ownerOnly: true
+			devOnly: true
 		});
 	}
 

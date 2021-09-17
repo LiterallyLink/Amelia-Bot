@@ -7,7 +7,7 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Reset a specified users daily cooldown',
 			category: 'Economy',
-			ownerOnly: true,
+			devOnly: true,
 			guildOnly: true
 		});
 	}

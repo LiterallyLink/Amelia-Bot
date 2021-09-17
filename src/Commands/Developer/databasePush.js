@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-// const guildDatabase = require('../../Models/guildSchema');
+const guildDatabase = require('../../Models/guildSchema');
 // const profileDatabase = require('../../Models/profileSchema');
 
 module.exports = class extends Command {
@@ -8,15 +8,21 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Pushes new properties to database documents',
 			category: 'Developer',
-			ownerOnly: true
+			devOnly: true
 		});
 	}
 
 	async run() {
-		// const database = await guildDatabase.updateMany({}, { $rename: { "economyDailies": "dailyAmount" } });
-		// const updateDoc = { $set: { dailyClaimed: new Date().getTime() } };
-		// const database = await profileDatabase.updateMany({}, updateDoc);
-		// console.log(database);
+		// await this.addNewItemToDocuments();
+	}
+
+	async addNewItemToDocuments() {
+		try {
+			const guildUpdateLog = await guildDatabase.updateMany({}, { $set: { customCommands: [] } });
+			console.log(guildUpdateLog);
+		} catch (err) {
+			console.log(err);
+		}
 	}
 
 };

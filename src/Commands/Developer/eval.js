@@ -13,7 +13,7 @@ module.exports = class extends Command {
 			category: 'Developer',
 			usage: '<code>',
 			args: true,
-			ownerOnly: true
+			devOnly: true
 		});
 	}
 
