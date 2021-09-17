@@ -16,7 +16,7 @@ module.exports = class extends Command {
 		const commandList = commands.map(cmd => cmd.name);
 		let categories = this.client.utils.removeDuplicates(commands.map(cmd => cmd.category));
 
-		if (!this.client.utils.checkOwner(message.author)) {
+		if (!this.client.utils.userIsADev(message.author)) {
 			categories = categories.filter(category => category !== 'Developer');
 		}
 
@@ -70,15 +70,17 @@ module.exports = class extends Command {
 		}
 	}
 
-	// eslint-disable-next-line consistent-return
 	commandOrCategory(query, categories, commandList, aliases) {
-		if (!query) return null;
+		if (!query) return false;
+
 		query = query.toLowerCase();
 		const containsCategory = categories.includes(this.client.utils.capitalise(query));
 		const containsCommand = commandList.includes(query) || aliases.has(query);
 
 		if (containsCategory) return 'isCategory';
 		if (containsCommand) return 'isCommand';
+
+		return false;
 	}
 
 };
