@@ -1,29 +1,25 @@
 const { MessageEmbed } = require('discord.js');
 
 module.exports = (client, queue, track) => {
-	const { title, url, thumbnail, author, duration, requestedBy } = track;
-
-	if (queue.playing) {
+	if (queue.tracks.length >= 1) {
 		const formattedTimeTillNextSong = client.utils.formatMS(queue.totalTime - queue.streamTime);
 
 		const queueLength = queue.tracks.length;
 
 		const addedToQueue = new MessageEmbed()
-			.setAuthor('Added to queue', requestedBy.displayAvatarURL())
-			.setDescription(`[${title}](${url})`)
-			.setThumbnail(thumbnail)
-			.setColor(client.embed.color.default)
-			.addFields(
-				{ name: 'Channel', value: `${author}`, inline: true },
-				{ name: 'Song Duration', value: `${client.music.format(duration)}`, inline: true },
-				{ name: 'Estimated time until playing', value: `${formattedTimeTillNextSong}`, inline: true },
-				{ name: 'Position in queue', value: `${queueLength}`, inline: true });
-
+			.setAuthor('Added to queue', track.requestedBy.displayAvatarURL())
+			.setDescription(`[${track.title}](${track.url})`)
+			.setThumbnail(track.thumbnail)
+			.addField('Channel', `${track.author}`, true)
+			.addField('Song Duration', `${client.music.format(track.duration)}`, true)
+			.addField('Estimated time until playing', `${formattedTimeTillNextSong}`, true)
+			.addField('Position in queue', `${queueLength}`, true)
+			.setColor(client.embed.color.default);
 		return queue.metadata.channel.send({ embeds: [addedToQueue] });
 	}
 
 	const songEmbed = new MessageEmbed()
-		.setDescription(`🎶 Playing [**${title}**](${url}) - Now!`)
+		.setDescription(`🎶 Playing [**${track.title}**](${track.url}) - Now!`)
 		.setThumbnail(client.embed.thumbnails.ameGuitar)
 		.setColor(client.embed.color.default);
 	return queue.metadata.channel.send({ embeds: [songEmbed] });
