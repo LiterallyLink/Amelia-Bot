@@ -7,6 +7,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
+			aliases: 'aki',
 			description: "Think about a real or fictional character, and I'll do my best to guess who it is.",
 			category: 'Fun',
 			guildOnly: true
@@ -33,13 +34,14 @@ module.exports = class extends Command {
 			);
 
 		const optionEmbed = new MessageEmbed()
-			.setDescription(`Please select the next game thematic`)
+			.setDescription(`Please select the game theme.`)
 			.setColor(this.client.embed.color.default);
 		const optionMsg = await message.channel.send({ embeds: [optionEmbed], components: [optionRow] });
 
 		const chosenThematic = await this.client.utils.buttonCollector(message, optionMsg, 60000);
 
 		optionMsg.delete();
+		message.channel.sendTyping();
 
 		if (chosenThematic === null) {
 			return message.channel.send({ content: 'The game has been cancelled due to inactivity.' });
@@ -139,7 +141,7 @@ module.exports = class extends Command {
 
 			const answerToQuestion = await this.client.utils.buttonCollector(message, questionMsg, 60000);
 
-			questionMsg.delete();
+			message.channel.sendTyping();
 
 			if (answerToQuestion === null) {
 				win = 'time';
@@ -241,14 +243,23 @@ module.exports = class extends Command {
 		}
 
 		if (win === 'time') {
-			return message.reply({ content: 'The game ended due to inactivity' });
+			const timeOutEmbed = new MessageEmbed()
+				.setTitle('The game has ended due to inactivity')
+				.setColor(this.client.embed.color.default);
+			return message.reply({ embeds: [timeOutEmbed] });
 		}
 
 		if (win) {
-			return message.channel.send({ content: 'Bravo, you have defeated me.' });
+			const lossEmbed = new MessageEmbed()
+				.setTitle('Bravo, you have defeated me!')
+				.setColor(this.client.embed.color.default);
+			return message.channel.send({ embeds: [lossEmbed] });
 		}
 
-		return message.channel.send({ content: 'Guessed right one more time! I love playing with you!' });
+		const victoryEmbed = new MessageEmbed()
+			.setTitle(`Another right guess? Victory is mine!`)
+			.setColor(this.client.embed.color.default);
+		return message.channel.send({ embeds: [victoryEmbed] });
 	}
 
 };
