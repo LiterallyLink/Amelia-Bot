@@ -28,8 +28,10 @@ module.exports = class extends Command {
 		}
 
 		await message.delete();
+
 		return message.channel.bulkDelete(toClear)
-			.then(() => message.channel.send(`${toClear} message(s) were cleared!`));
+			.then(() => message.channel.send(`${toClear} message(s) were cleared!`)
+				.then((msg) => msg.delete()));
 	}
 
 };
