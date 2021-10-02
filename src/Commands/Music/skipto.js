@@ -8,7 +8,7 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Skips to a specified track',
 			category: 'Music',
-			usage: '1',
+			usage: '`1`',
 			guildOnly: true
 		});
 	}
