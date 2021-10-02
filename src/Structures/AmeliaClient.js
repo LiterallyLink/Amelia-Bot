@@ -4,6 +4,7 @@ const Economy = require('./Utilities/Economy.js');
 const Level = require('./Utilities/Level.js');
 const Music = require('./Utilities/Music.js');
 const Database = require('./Utilities/Database');
+const Canvas = require('./Utilities/Canvas');
 
 module.exports = class AmeliaClient extends Client {
 
@@ -37,9 +38,11 @@ module.exports = class AmeliaClient extends Client {
 
 		this.level = new Level(this);
 
+		this.canvas = new Canvas(this);
+
 		this.cooldowns = new Map();
 
-		this.owners = options.owners;
+		this.devs = options.developers;
 
 		this.embed = require('../../assets/jsons/embed.json');
 
