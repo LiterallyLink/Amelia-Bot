@@ -6,6 +6,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
+			aliases: ['st'],
 			category: 'Music',
 			description: "Stop's the player",
 			guildOnly: true
