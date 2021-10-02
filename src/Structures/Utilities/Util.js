@@ -49,8 +49,8 @@ module.exports = class Util {
 	}
 
 	// Checks if the user is an owner.
-	checkOwner(author) {
-		return this.client.owners.includes(author.id);
+	userIsADev(author) {
+		return this.client.devs.includes(author.id);
 	}
 
 	// Compares the member and targets permissions based on their highest role.
@@ -144,7 +144,7 @@ module.exports = class Util {
 		return argumentsBoolean;
 	}
 
-	// Shuffles and returns any given array.
+	// Shuffles and returns the given array.
 	shuffle(array) {
 		const arr = array.slice(0);
 		for (let i = arr.length - 1; i >= 0; i--) {
@@ -166,32 +166,34 @@ module.exports = class Util {
 			return message.author;
 		}
 
-
-		if (message.mentions.members.size !== 0) {
+		// Fetches the user from their mention
+		if (message.mentions.members.size > 0) {
 			memberToFind = message.mentions.members.first();
 
 			return memberToFind.user;
 		}
 
-		const fetchById = await this.client.users.fetch(memberToFind).catch(() => null);
+		// Fetch via ID
+		const fetchedByID = await this.client.users.fetch(memberToFind).catch(() => null);
 
+		if (fetchedByID !== null) return fetchedByID;
 
-		if (fetchById) {
-			return fetchById.user;
-		}
+		// Fetch by username, then display name (server nicknames), then tags
 
-		const findMyNickname = message.guild.members.cache.find(member => member.user.username.toLowerCase() === memberToFind) ||
-		message.guild.members.cache.find(user => user.displayName.toLowerCase() === memberToFind);
+		memberToFind = memberToFind.toLowerCase();
 
-		if (findMyNickname) {
-			return findMyNickname.user;
+		const findByNickname = message.guild.members.cache.find(member => member.user.username.toLowerCase() === memberToFind) ||
+		message.guild.members.cache.find(member => member.displayName.toLowerCase().includes(memberToFind) || member.user.tag.toLowerCase().includes(memberToFind));
+
+		if (findByNickname) {
+			return findByNickname.user;
 		}
 
 		return message.author;
 	}
 
 	userCooldown(message, command) {
-		if (this.checkOwner(message.author)) return false;
+		if (this.userIsADev(message.author)) return false;
 
 		if (!this.client.cooldowns.has(command.name)) {
 			this.client.cooldowns.set(command.name, new Collection());
