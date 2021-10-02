@@ -47,7 +47,7 @@ module.exports = class extends Command {
 		try {
 			if (!queue.connection) await queue.connect(message.member.voice.channel);
 		} catch {
-			queue.deleteQueue(message.guild.id);
+			player.deleteQueue(message.guild.id);
 
 			const unableToJoinVC = new MessageEmbed()
 				.setDescription('I was unable to join your voice channel.')
