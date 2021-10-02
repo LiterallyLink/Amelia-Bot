@@ -14,18 +14,23 @@ module.exports = class extends Command {
 
 	async run(message, [number], prefix) {
 		if (Number.isInteger(parseInt(number)) && number >= 0) {
+			const guildData = await this.client.database.fetchGuild(message.guild);
+			const user = await this.client.database.fetchUser(message.author.id, message.guild.id);
+
+			const { xpSettings } = guildData;
+			const { maxXPGain, minXPGain } = xpSettings;
 			const xpToLevel = this.client.level.xpFor(number);
-			const users = await this.client.database.fetchUser(message.author.id, message.guild.id);
-			const xpToLevelAtCurrentLevel = xpToLevel - users.xp;
-			const { xpSettings } = await this.client.database.fetchGuild(message.guild);
+			const xpDifference = xpToLevel - user.xp;
+			const xpMedian = Math.round((maxXPGain + minXPGain) / 2);
+			const averageXPFromCurrentLevel = Math.round(xpDifference / xpMedian);
 
 			const xpForEmbed = new MessageEmbed()
-				.setAuthor(`Level Calculator`, message.author.displayAvatarURL())
+				.setTitle(`XP Calculations for level ${number}`)
 				.setDescription(`Every minute, you earn ${xpSettings.minXPGain}-${xpSettings.maxXPGain} XP from chatting!`)
-				.addField(`From Level 0`, `**Total XP needed to reach level ${number}:** ${this.client.utils.formatNumber(xpToLevel)}\n
-            **Estimated Messages Needed**: `)
-				.addField(`From your current level`, `**Total XP needed to reach level ${number}:** ${this.client.utils.formatNumber(xpToLevelAtCurrentLevel)}\n
-            **Estimated Messages Needed**: `)
+				.addField(`From Level 0 to ${number}`, `**Total XP needed to reach level ${number}:** ${xpToLevel}`)
+				.addField(`Estimated messages needed:`, `${Math.round(xpToLevel / xpMedian)} average, ${Math.round(xpToLevel / maxXPGain)} min, ${Math.round(xpToLevel / minXPGain)} max.`)
+				.addField(`From your current level to ${number}`, `**Total XP needed to reach level ${number}:** ${xpDifference}`)
+				.addField(`Estimated messages needed:`, `${averageXPFromCurrentLevel} average, ${Math.round(xpDifference / maxXPGain)} min, ${Math.round(xpDifference / minXPGain)} max.`)
 				.setColor(this.client.embed.color.default);
 			return message.channel.send({ embeds: [xpForEmbed] });
 		}
