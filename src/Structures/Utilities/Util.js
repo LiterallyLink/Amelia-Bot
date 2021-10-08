@@ -161,13 +161,35 @@ module.exports = class Util {
 		return Math.round(Math.random() * (max - min)) + min;
 	}
 
-	async getMember(message, memberToFind = '', returnToAuthor) {
-		if (!memberToFind && returnToAuthor === true) {
-			return message.author;
+	abbreviateNumber(value) {
+		let newValue = value;
+
+		if (value >= 1000) {
+			const suffixes = ['', 'k', 'm', 'b', 't'];
+			const suffixNum = Math.floor(`${value}`.length / 3);
+
+			let shortValue = '';
+
+			for (let precision = 2; precision >= 1; precision--) {
+				shortValue = parseFloat((suffixNum !== 0 ? value / Math.pow(1000, suffixNum) : value).toPrecision(precision));
+				var dotLessShortValue = `${shortValue}`.replace(/[^a-zA-Z 0-9]+/g, '');
+				if (dotLessShortValue.length <= 2) { break; }
+			}
+			if (shortValue % 1 !== 0) shortValue = shortValue.toFixed(1);
+			newValue = shortValue + suffixes[suffixNum];
 		}
 
+		return newValue;
+	}
+
+	isWholeNumber(number) {
+		const regex = new RegExp(/^\d+$/gm);
+		return regex.test(number) ? number : false;
+	}
+
+	async getMember(message, memberToFind = '', returnToAuthor) {
 		// Fetches the user from their mention
-		if (message.mentions.members.size > 0) {
+		if (memberToFind && message.mentions.members.size > 0) {
 			memberToFind = message.mentions.members.first();
 
 			return memberToFind.user;
@@ -176,7 +198,7 @@ module.exports = class Util {
 		// Fetch via ID
 		const fetchedByID = await this.client.users.fetch(memberToFind).catch(() => null);
 
-		if (fetchedByID !== null) return fetchedByID;
+		if (memberToFind && fetchedByID !== null) return fetchedByID;
 
 		// Fetch by username, then display name (server nicknames), then tags
 
@@ -185,11 +207,15 @@ module.exports = class Util {
 		const findByNickname = message.guild.members.cache.find(member => member.user.username.toLowerCase() === memberToFind) ||
 		message.guild.members.cache.find(member => member.displayName.toLowerCase().includes(memberToFind) || member.user.tag.toLowerCase().includes(memberToFind));
 
-		if (findByNickname) {
+		if (memberToFind && findByNickname) {
 			return findByNickname.user;
 		}
 
-		return message.author;
+		if (!memberToFind && returnToAuthor === true) {
+			return message.author;
+		}
+
+		return null;
 	}
 
 	userCooldown(message, command) {
