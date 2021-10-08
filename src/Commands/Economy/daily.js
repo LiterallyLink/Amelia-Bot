@@ -5,7 +5,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			description: 'Claim your daily credits! Be sure to claim on consecutive days to earn a streak bonus!',
+			description: 'Claim your daily holocoins! Be sure to claim on consecutive days to earn a streak bonus!',
 			category: 'Economy',
 			guildOnly: true
 		});

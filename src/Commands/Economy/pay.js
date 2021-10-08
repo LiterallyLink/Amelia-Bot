@@ -5,8 +5,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			aliases: ['give'],
-			description: 'Donate currency to a specified user',
+			description: 'Donate holocoins to a specified user',
 			category: 'Economy',
 			usage: '(user) (amount)',
 			guildOnly: true,
@@ -34,8 +33,8 @@ module.exports = class extends Command {
 		const successfulPaymentEmbed = new MessageEmbed()
 			.setTitle('Donation Successful')
 			.setDescription(`From: ${message.author}, To: ${target}, Amount: ${payment}`)
-			.addFields({ name: 'You have:', value: `${newUserBal} credits` },
-				{ name: `${target.username} has:`, value: `${targetBal} credits` })
+			.addFields({ name: 'You have:', value: `${newUserBal} holocoins` },
+				{ name: `${target.username} has:`, value: `${targetBal} holocoins` })
 			.setColor(this.client.embed.color.default);
 
 		return message.channel.send({ embeds: [successfulPaymentEmbed] });

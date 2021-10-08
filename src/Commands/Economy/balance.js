@@ -15,11 +15,11 @@ module.exports = class extends Command {
 
 	async run(message, [target]) {
 		target = message.mentions.users.first() || message.author;
-		const credits = await this.client.economy.getCredits(target.id, message.guild.id);
+		const holocoins = await this.client.economy.getCredits(target.id, message.guild.id);
 
 		const balanceEmbed = new MessageEmbed()
 			.setAuthor(target.username, target.displayAvatarURL())
-			.setDescription(`Balance: ${this.client.utils.formatNumber(credits)}`)
+			.setDescription(`Balance: ${this.client.utils.formatNumber(holocoins)}`)
 			.setColor(this.client.embed.color.default);
 
 		return message.channel.send({ embeds: [balanceEmbed] });

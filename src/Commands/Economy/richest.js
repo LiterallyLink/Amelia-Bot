@@ -22,13 +22,13 @@ module.exports = class extends Command {
 			return message.channel.send({ embeds: [leaderboardEmbed] });
 		}
 
-		const lbList = rawLeaderboard.map((currencyBoard, index) => `${index + 1}. <@${currencyBoard.userId}> ${this.client.utils.formatNumber(currencyBoard.credits)} credits`);
+		const lbList = rawLeaderboard.map((currencyBoard, index) => `${index + 1}. <@${currencyBoard.userId}> ${this.client.utils.formatNumber(currencyBoard.credits)} holocoins`);
 		const guildBalanceArray = rawLeaderboard.map((currencyBoard) => currencyBoard.credits);
 		const firstPlace = await this.client.users.fetch(rawLeaderboard[0].userId).catch(console.error);
 		const totalGuildBalance = guildBalanceArray.reduce((a, b) => a + b, 0);
 
 		const formattedLeaderboard = new MessageEmbed()
-			.setDescription(`:bank: **Total Server Economy**: ${this.client.utils.formatNumber(totalGuildBalance)} Total Credits\n\n${lbList.join('\n\n')}`)
+			.setDescription(`:bank: **Total Server Economy**: ${this.client.utils.formatNumber(totalGuildBalance)} Total Holocoins\n\n${lbList.join('\n\n')}`)
 			.setThumbnail(firstPlace.displayAvatarURL())
 			.setColor(this.client.embed.color.default);
 
