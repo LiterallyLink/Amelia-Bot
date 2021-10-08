@@ -34,7 +34,7 @@ module.exports = class extends Command {
 
 			const userWonEmbed = new MessageEmbed()
 				.setDescription(`Congrats! You flipped ${headsOrTails}`)
-				.setFooter(`💸 You won ${bet} credits`)
+				.setFooter(`💸 You won ${bet} holocoins`)
 				.setColor(this.client.embed.color.success);
 			return message.channel.send({ embeds: [userWonEmbed] });
 		} else {
@@ -42,7 +42,7 @@ module.exports = class extends Command {
 
 			const userLostEmbed = new MessageEmbed()
 				.setDescription(`Uh oh. . .the coin landed on ${headsOrTails}`)
-				.setFooter(`You lost ${bet} credits`)
+				.setFooter(`You lost ${bet} holocoins`)
 				.setColor(this.client.embed.color.error);
 			return message.channel.send({ embeds: [userLostEmbed] });
 		}
