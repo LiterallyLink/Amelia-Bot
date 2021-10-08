@@ -10,7 +10,9 @@ const profileSchema = new mongoose.Schema({
 	dailyClaimed: { type: Number, default: 0 },
 	dailyClaimedStreak: { type: Number, default: 0 },
 	lastUpdated: { type: Date, default: new Date().getTime() },
-	isBlacklisted: { type: Boolean, default: false }
+	isBlacklisted: { type: Boolean, default: false },
+	rankcards: { type: Array, default: [] },
+	currentCard: { type: String, default: 'default' }
 
 });
 
