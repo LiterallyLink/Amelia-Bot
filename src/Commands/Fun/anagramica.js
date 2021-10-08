@@ -1,6 +1,6 @@
-const { MessageEmbed } = require('discord.js');
-const letterPool = 'abcdefghijklmnopqrstuvwxyz'.split('');
-const anagramScores = require('../../../assets/jsons/anagramicaScore.json');
+const anagramLetterProbability = require('../../../assets/jsons/anagram/anagramicaProbability.json');
+const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
+const anagramScores = require('../../../assets/jsons/anagram/anagramicaScore.json');
 const request = require('node-superfetch');
 const Command = require('../../Structures/Command');
 
@@ -8,7 +8,8 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			description: 'Provides a link to invite the bot to your guild',
+			aliases: ['anagram'],
+			description: 'Play a game of anagramica and guess as many words as possible!',
 			category: 'Fun'
 		});
 	}
@@ -27,15 +28,24 @@ module.exports = class extends Command {
 
 		const { valid, letters } = await this.fetchList();
 
+		const quitButton = new MessageActionRow()
+			.addComponents(
+				new MessageButton()
+					.setCustomId('quit')
+					.setLabel('Quit')
+					.setStyle('DANGER')
+			);
+
 		const anagramicaStartMenu = new MessageEmbed()
 			.setTitle('Anagramica - Start Guessing!')
 			.setDescription(letters.map(letter => `\`${letter.toUpperCase()}\``).join(' '))
 			.setFooter('You have 60 seconds to provide anagrams for the following letters.')
 			.setColor(this.client.embed.color.default);
-		await message.reply({ embeds: [anagramicaStartMenu] });
+		await message.reply({ embeds: [anagramicaStartMenu], components: [quitButton] });
 
 		const picked = [];
 		let points = 0;
+		let incorrectGuesses = 0;
 
 		const filter = res => {
 			if (picked.includes(res.content.toLowerCase())) return false;
@@ -47,11 +57,14 @@ module.exports = class extends Command {
 			if (!valid.includes(res.content.toLowerCase())) {
 				points -= score;
 				picked.push(res.content.toLowerCase());
+				res.react('❌');
+				incorrectGuesses++;
 				return false;
 			}
 
 			points += score;
 			picked.push(res.content.toLowerCase());
+			res.react('✅');
 			return true;
 		};
 
@@ -59,41 +72,41 @@ module.exports = class extends Command {
 
 		this.client.games.delete(message.channel.id);
 
+		const anagramEmbed = new MessageEmbed()
+			.setTitle('Anagramica - Game Over!')
+			.setColor(this.client.embed.color.default);
+
 		if (!anagramCollector.size) {
-			const noAnagramGiven = new MessageEmbed()
-				.setTitle(`Anagramica - Game Over!`)
-				.setDescription('No guesses? Better luck next time!')
-				.setColor(this.client.embed.color.error);
-			return message.reply({ embeds: [noAnagramGiven] });
+			anagramEmbed.setDescription('No guesses? Better luck next time!');
+			return message.reply({ embeds: [anagramEmbed] });
 		}
 
 		if (points < 1) {
-			const negativePoints = new MessageEmbed()
-				.setTitle(`Anagramica - Game Over!`)
-				.setDescription(`Yikes! Your final score was ${points}`)
-				.setColor(this.client.embed.color.default);
-			return message.reply({ embeds: [negativePoints] });
+			anagramEmbed.setDescription(`Yikes! Your final score was \`${points}\``);
+			anagramEmbed.setColor(this.client.embed.color.error);
+			return message.reply({ embeds: [anagramEmbed] });
 		}
 
-		const totalPointsEmbed = new MessageEmbed()
-			.setTitle(`Anagramica - Game Over!`)
-			.setDescription(`Great job! Your total score was ${points}`)
-			.addField('Guessed', `${picked.length}/${valid.length}`, true)
-			.addField('Incorrect Guesses', 'incorrect num', true)
-			.setColor(this.client.embed.color.default);
-		return message.reply({ embeds: [totalPointsEmbed] });
+		anagramEmbed.setDescription(`Great job! Your total score was \`${points}\``)
+			.addField('Guessed', `${picked.length}/${valid.length} words`, true)
+			.addField('Incorrect Guesses', `${incorrectGuesses}`, true);
+		return message.reply({ embeds: [anagramEmbed] });
 	}
 
 	async fetchList() {
 		const letters = [];
 
-		for (let i = 0; i < 10; i++) letters.push(letterPool[Math.floor(Math.random() * letterPool.length)]);
+		for (let i = 0; i < 10; i++) {
+			letters.push(this.weightedRandom(anagramLetterProbability));
+		}
+
 		const { body } = await request.get(`http://www.anagramica.com/all/${letters.join('')}`);
 		return { valid: body.all, letters };
 	}
 
 	getScore(letters, word) {
 		let score = 0;
+
 		for (const letter of word.split('')) {
 			if (!letters.includes(letter)) return null;
 			score += anagramScores[letter];
@@ -105,11 +118,13 @@ module.exports = class extends Command {
 	weightedRandom(prob) {
 		let i, sum = 0;
 		const randomValue = Math.random();
+
 		for (i in prob) {
 			sum += prob[i];
 			if (randomValue <= sum) return i;
 		}
-		return null;
+
+		return undefined;
 	}
 
 };
