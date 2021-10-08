@@ -50,17 +50,15 @@ module.exports = class Economy {
 	}
 
 	async isValidPayment(message, bet) {
-		if (!bet) bet = 0.5;
-
 		const balance = await this.getCredits(message.author.id, message.guild.id);
 
 		// eslint-disable-next-line no-bitwise
 		const validPayment = bet > 0 && bet % 1 === 0 && balance >= bet;
 
-		if (!validPayment) {
+		if (!bet || !validPayment) {
 			const howToPlayEmbed = new MessageEmbed()
-				.addField('Invalid Payment', 'Please provide a valid amount of credits.')
-				.addField('Current Balance', `You have ${balance} credits`)
+				.addField('Invalid Payment', 'Please provide a valid amount of holocoins.')
+				.addField('Current Balance', `You have ${balance} holocoins`)
 				.setColor(this.client.embed.color.error);
 			message.reply({ embeds: [howToPlayEmbed] });
 		}
