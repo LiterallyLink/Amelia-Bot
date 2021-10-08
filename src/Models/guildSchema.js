@@ -9,6 +9,8 @@ const guildSchema = new mongoose.Schema({
 	customCommands: { type: Array, default: [] },
 	prefix: { type: String, required: true, default: config.prefix },
 	xpSettings: { minXPGain: { type: Number, default: 15 }, maxXPGain: { type: Number, default: 25 } },
+	kickLog: { type: Array, default: [] },
+	banLog: { type: Array, default: [] },
 	levelUpMsg: { type: Boolean, default: true },
 	antiInvites: { type: Boolean, default: false },
 	antiLinks: { type: Boolean, default: false },
