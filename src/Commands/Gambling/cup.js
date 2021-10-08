@@ -69,7 +69,7 @@ module.exports = class extends Command {
 			const youWonEmbed = new MessageEmbed()
 				.setImage(cupGif[randomCup])
 				.setDescription(`Congrats! Ame was hiding under ${randomCup}!`)
-				.setFooter(`💸 You won ${bet} credits!`)
+				.setFooter(`💸 You won ${bet} holocoins!`)
 				.setColor(this.client.embed.color.success);
 			return cupMsg.edit({ embeds: [youWonEmbed], components: [] });
 		} else {
@@ -78,7 +78,7 @@ module.exports = class extends Command {
 			const youLostEmbed = new MessageEmbed()
 				.setImage(cupGif[randomCup])
 				.setDescription(`Too bad! Ame was hiding under ${randomCup}. . .`)
-				.setFooter(`💸 You lost ${bet} credits. . .`)
+				.setFooter(`💸 You lost ${bet} holocoins. . .`)
 				.setColor(this.client.embed.color.error);
 			return cupMsg.edit({ embeds: [youLostEmbed], components: [] });
 		}
