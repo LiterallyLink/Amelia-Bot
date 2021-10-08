@@ -94,7 +94,7 @@ module.exports = class extends Command {
 				ctx.closePath();
 
 				ctx.beginPath();
-				ctx.font = '18px uni sans';
+				ctx.font = '18px sans-serif';
 				ctx.textAlign = 'center';
 				ctx.fillStyle = 'white';
 
@@ -126,9 +126,7 @@ module.exports = class extends Command {
 			ctx.closePath();
 
 			const { status, amount } = statusData[i];
-			ctx.font = 'Sans Not-Rotated 20px';
 			ctx.textAlign = 'start';
-			ctx.fillStyle = 'white';
 
 			ctx.fillText(`${status} - ${amount} (${(100 * amount / totalMembers).toFixed(2)}%)`, statusBoxX + 30, statusBoxY + 15);
 			statusBoxY += 30;
