@@ -88,8 +88,8 @@ module.exports = class extends Command {
 
 			slotEmbed.setDescription(`**${border}\n| ${randomSlots.join(' | ')} |\n${border}\n--- YOU WON ---**`);
 			slotEmbed.addFields(
-				{ name: 'Profit', value: `**${profit}** credits`, inline: true },
-				{ name: 'Credits', value: `You have ${newBalance} credits`, inline: true });
+				{ name: 'Profit', value: `**${profit}** holocoins`, inline: true },
+				{ name: 'Credits', value: `You have ${newBalance} holocoins`, inline: true });
 			slotEmbed.setColor(this.client.embed.color.success);
 
 			return msg.edit({ embeds: [slotEmbed] });
@@ -98,8 +98,8 @@ module.exports = class extends Command {
 
 			slotEmbed.setDescription(`**${border}\n| ${randomSlots.join(' | ')} |\n${border}\n--- YOU LOSE ---**`);
 			slotEmbed.addFields(
-				{ name: 'Profit', value: `**-${bet}** credits`, inline: true },
-				{ name: 'Credits', value: `You have ${newBalance} credits`, inline: true });
+				{ name: 'Profit', value: `**-${bet}** holocoins`, inline: true },
+				{ name: 'Credits', value: `You have ${newBalance} holocoins`, inline: true });
 			slotEmbed.setColor(this.client.embed.color.error);
 
 			return msg.edit({ embeds: [slotEmbed] });

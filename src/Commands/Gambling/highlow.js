@@ -105,8 +105,8 @@ module.exports = class extends Command {
 				const gameOverEmbed = new MessageEmbed()
 					.setTitle(`Highlow - Bet ${bet}`, message.author.displayAvatarURL())
 					.addField('Stopped At', `${multiplier}x`, true)
-					.addField('Profit', `${multiplier * bet} credits`, true)
-					.addField('Balance', `You have ${balance + profit} credits`)
+					.addField('Profit', `${multiplier * bet} holocoins`, true)
+					.addField('Balance', `You have ${balance + profit} holocoins`)
 					.setColor(this.client.embed.color.default);
 				message.channel.send({ embeds: [gameOverEmbed] });
 
@@ -117,8 +117,8 @@ module.exports = class extends Command {
 				const youLoseEmbed = new MessageEmbed()
 					.setTitle(`Highlow - Bet ${bet}`, message.author.displayAvatarURL())
 					.addField(`Incorrect!`, `Number: **${randomNumber}**`, true)
-					.addField(`Profit`, `-${bet} credits`, true)
-					.addField(`Balance`, `You have ${balance - bet} credits`, true)
+					.addField(`Profit`, `-${bet} holocoins`, true)
+					.addField(`Balance`, `You have ${balance - bet} holocoins`, true)
 					.setFooter('Better luck next time!')
 					.setColor(this.client.embed.color.error);
 				message.channel.send({ embeds: [youLoseEmbed] });
