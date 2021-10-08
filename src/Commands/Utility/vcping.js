@@ -22,7 +22,7 @@ module.exports = class extends Command {
 
 		if (!queue) {
 			const noQueue = new MessageEmbed()
-				.setDescription('The server queue is currently empty')
+				.setDescription('A song must be playing to test VC ping.')
 				.setColor(embed.color.default);
 			return message.channel.send({ embeds: [noQueue] });
 		}
