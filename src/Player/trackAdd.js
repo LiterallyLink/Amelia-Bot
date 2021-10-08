@@ -1,14 +1,15 @@
 const { MessageEmbed } = require('discord.js');
 
 module.exports = (client, queue, track) => {
-	if (queue.tracks.length >= 1) {
+	if (queue.playing) {
+		console.log(track);
 		const formattedTimeTillNextSong = client.utils.formatMS(queue.totalTime - queue.streamTime);
 
 		const queueLength = queue.tracks.length;
 
 		const addedToQueue = new MessageEmbed()
 			.setAuthor('Added to queue', track.requestedBy.displayAvatarURL())
-			.setDescription(`[${track.title}](${track.url})`)
+			.setDescription(`[${track?.title}](${track.url})`)
 			.setThumbnail(track.thumbnail)
 			.addField('Channel', `${track.author}`, true)
 			.addField('Song Duration', `${client.music.format(track.duration)}`, true)
