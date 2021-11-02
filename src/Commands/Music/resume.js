@@ -6,14 +6,15 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
+			aliases: ['rs'],
 			description: 'Resumes the queue',
 			category: 'Music',
-			guildOnly: true
+			guildOnly: true,
+			voiceChannelOnly: true
 		});
 	}
 
 	async run(message) {
-		if (!this.client.music.isInChannel(message)) return;
 		if (!this.client.music.canModifyQueue(message)) return;
 
 		const { player, embed } = this.client;
@@ -30,6 +31,7 @@ module.exports = class extends Command {
 
 		if (queueIsPaused) {
 			queue.setPaused(false);
+
 			const resumingSongEmbed = new MessageEmbed()
 				.setDescription(`:play_pause: Resuming!`)
 				.setColor(embed.color.default);
