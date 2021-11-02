@@ -2,7 +2,6 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = (client, queue, track) => {
 	if (queue.playing) {
-		console.log(track);
 		const formattedTimeTillNextSong = client.utils.formatMS(queue.totalTime - queue.streamTime);
 
 		const queueLength = queue.tracks.length;
@@ -13,7 +12,7 @@ module.exports = (client, queue, track) => {
 			.setThumbnail(track.thumbnail)
 			.addField('Channel', `${track.author}`, true)
 			.addField('Song Duration', `${client.music.format(track.duration)}`, true)
-			.addField('Estimated time until playing', `${formattedTimeTillNextSong}`, true)
+			.addField('Estimated time until playing', `${formattedTimeTillNextSong || 'Unavaliable'}`, true)
 			.addField('Position in queue', `${queueLength}`, true)
 			.setColor(client.embed.color.default);
 		return queue.metadata.channel.send({ embeds: [addedToQueue] });
