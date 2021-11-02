@@ -7,7 +7,7 @@ module.exports = class extends Event {
 	async run(message) {
 		if (message.author.bot) return;
 
-		const { user, commands, aliases, utils, database, level, embed, defaultPerms } = this.client;
+		const { user, commands, aliases, utils, database, level, music, embed, defaultPerms } = this.client;
 
 		const prefixRegexp = RegExp(`^<@!?${user.id}> `);
 
@@ -35,20 +35,11 @@ module.exports = class extends Event {
 
 		if (command.devOnly && !utils.userIsADev(message.author)) return;
 		if (command.guildOnly && !message.guild) return;
+		if (command.voiceChannelOnly && !music.isInChannel(message)) return;
 		if (utils.userCooldown(message, command)) return;
 		if (utils.commandRequiresArguments(message, command, args)) return;
 
 		if (message.guild) {
-			const guild = await database.fetchGuild(message.guild);
-
-			if (guild.disabledModules.includes(command.category) || guild.disabledCommands.includes(command.name)) {
-				const disabledModuleEmbed = new MessageEmbed()
-					.setColor(embed.color.default)
-					.setDescription(`The command ${command.name} or command module ${command.category} is currently disabled`)
-					.setFooter(`To enable and disable bot features, use ${prefix}help module`);
-				return message.reply({ embeds: [disabledModuleEmbed] });
-			}
-
 			const userPermCheck = command.userPerms ? defaultPerms.add(command.userPerms) : defaultPerms;
 			const botPermCheck = command.botPerms ? defaultPerms.add(command.botPerms) : defaultPerms;
 
