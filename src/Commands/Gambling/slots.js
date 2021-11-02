@@ -8,7 +8,7 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			aliases: ['slot'],
-			description: 'Try your luck at the slot machine!',
+			description: 'Place your bet and try your luck at the slot machine!',
 			category: 'Gambling',
 			usage: '<bet>',
 			guildOnly: true
@@ -31,11 +31,14 @@ module.exports = class extends Command {
 		const current = this.client.games.get(message.channel.id);
 
 		if (current) {
-			const inGame = new MessageEmbed()
+			const gameInProgress = new MessageEmbed()
 				.setDescription(`Please wait until the current game of \`${current.name}\` is finished.`)
+				.setThumbnail(this.client.embed.thumbnails.ameShake)
 				.setColor(this.client.embed.color.error);
-			return message.reply({ embeds: [inGame] });
+			return message.reply({ embeds: [gameInProgress] });
 		}
+
+		this.client.games.set(message.channel.id, { name: this.name });
 
 		const slot = [];
 		const border = '---------------------';
@@ -55,8 +58,6 @@ module.exports = class extends Command {
 
 		const randomSlots = new Array(3);
 		randomSlots.fill(emoji.fruit);
-
-		this.client.games.set(message.channel.id, { name: this.name });
 
 		const slotEmbed = new MessageEmbed()
 			.setTitle(`Slots | User: ${message.author.username} | Bet: ${bet}`)
