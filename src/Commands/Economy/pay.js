@@ -19,6 +19,7 @@ module.exports = class extends Command {
 		if (!target) {
 			const invalidTarget = new MessageEmbed()
 				.setDescription(`Please mention a valid user to donate to.`)
+				.setThumbnail(this.client.embed.thumbnails.ameShake)
 				.setColor(this.client.embed.color.error);
 			return message.channel.send({ embeds: [invalidTarget] });
 		}
