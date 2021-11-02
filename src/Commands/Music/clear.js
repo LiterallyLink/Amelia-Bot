@@ -6,23 +6,24 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
+			aliases: ['cq'],
 			description: "Clear's all tracks from the queue",
 			category: 'Music',
-			guildOnly: true
+			guildOnly: true,
+			voiceChannelOnly: true
 		});
 	}
 
 	async run(message) {
-		if (!this.client.music.isInChannel(message)) return;
 		if (!this.client.music.canModifyQueue(message)) return;
 
 		const { player, embed } = this.client;
 
 		const queue = player.getQueue(message.guild.id);
 
-		if (!queue) {
+		if (!queue || !queue.playing || !queue.tracks[0]) {
 			const noQueue = new MessageEmbed()
-				.setDescription('The server queue is currently empty')
+				.setDescription('There is no music in the queue to clear')
 				.setColor(embed.color.default);
 			return message.channel.send({ embeds: [noQueue] });
 		}
@@ -32,7 +33,7 @@ module.exports = class extends Command {
 			.setColor(embed.color.default);
 		message.channel.send({ embeds: [clearedQueue] });
 
-		queue.clear();
+		await queue.clear();
 	}
 
 };
