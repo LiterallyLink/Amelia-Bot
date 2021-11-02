@@ -25,7 +25,7 @@ module.exports = class extends Command {
 			return message.channel.send({ embeds: [invalidUser] });
 		}
 
-		const xpAmount = this.client.utils.isWholeNumber(args[1]);
+		const xpAmount = this.client.utils.isInt(args[1]);
 
 		if (!xpAmount) {
 			const invalidXPEmbed = new MessageEmbed()
