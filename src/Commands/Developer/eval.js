@@ -30,7 +30,7 @@ module.exports = class extends Command {
 			const stop = process.hrtime(start);
 
 			const evaluatedCode = new MessageEmbed()
-				.setColor('fce3b7')
+				.setColor(this.client.embed.color.default)
 				.setTitle('Evaluated')
 				.setDescription(`📥 **To Eval**\n\`\`\`${code}\`\`\` \n📤 **Evaled** \n\`\`\`js\n${this.clean(inspect(evaled, { depth: 0 }))}\n\`\`\``)
 				.addField('Type Of', `\`\`\`ts\n${new Type(evaled).is}\n\`\`\``)
@@ -40,6 +40,7 @@ module.exports = class extends Command {
 			const invalidCode = new MessageEmbed()
 				.setTitle('Error')
 				.addField('Error', `${error}`)
+				.setThumbnail(this.client.embed.thumbnails.ameShake)
 				.setColor(this.client.embed.color.error);
 			message.reply({ embeds: [invalidCode] });
 		}
