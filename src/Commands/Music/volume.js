@@ -8,12 +8,12 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Modifies the current queues volume',
 			category: 'Music',
-			guildOnly: true
+			guildOnly: true,
+			voiceChannelOnly: true
 		});
 	}
 
 	async run(message, [newVolume]) {
-		if (!this.client.music.isInChannel(message)) return;
 		if (!this.client.music.canModifyQueue(message)) return;
 
 		const { player, embed } = this.client;
@@ -27,14 +27,24 @@ module.exports = class extends Command {
 			return message.channel.send({ embeds: [noQueue] });
 		}
 
-		if (!newVolume && isNaN(newVolume)) {
+		const vol = parseInt(newVolume);
+
+		if (!vol) {
 			const voiceEmbed = new MessageEmbed()
-				.setDescription(`The current volume is set at: **${queue.volume}%**`)
+				.setDescription(`The current volume is set to: **${queue.volume}%**`)
 				.setColor(embed.color.default);
 			return message.channel.send({ embeds: [voiceEmbed] });
 		}
 
-		queue.setVolume(parseInt(newVolume));
+		if (!this.client.utils.isInt(vol) || vol > 100) {
+			const voiceEmbed = new MessageEmbed()
+				.setDescription(`Please provide a valid number to set the volume to`)
+				.setThumbnail(embed.thumbnails.ameShake)
+				.setColor(embed.color.error);
+			return message.channel.send({ embeds: [voiceEmbed] });
+		}
+
+		queue.setVolume(vol);
 
 		const volumeSetEmbed = new MessageEmbed()
 			.setDescription(`The volume has been set to: **${parseInt(newVolume)}%**`)
