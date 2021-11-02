@@ -53,6 +53,6 @@
 		"KDiamonds": "<a:KDiamonds:798724144341975070>",
 		"KSpades": "<a:KSpades:798724144183246879>"
 	},
-	"explanation": "The goal of blackjack is to beat the dealer's hand without going over 21.\n\nEach player starts with two cards, one of the dealer's cards is hidden until the end.\n\nTo 'Hit' is to ask for another card.\nTo 'Stand' is to hold your total and end your turn.\n\nIf you go over 21 you bust, and the dealer wins regardless of the dealer's hand.",
-	"options": "**Hit**: draw another card\n**Stand**: end your turn\n**Fold**: forfeit and lose half your bet\n**Double**: double your bet"
+	"explanation": "The goal of blackjack is to beat the dealer's hand without going over 21.\n\nEach player starts with two cards, one of the dealer's cards is hidden until the end.\n\nIf you go over 21 you bust and the dealer wins regardless of their hand.",
+	"options": "**Hit**: Draw another card\n**Stand**: End your turn\n**Split**: Turn an 11 (Ace Card) into a 1 once per game.\n**Fold**: Forfeit and lose half your bet\n**Double**: Double your bet"
 }
