@@ -89,7 +89,7 @@ module.exports = class Util {
 		return guild.channels.cache.find(chl => (chl.type === 'text') && chl.name.toLowerCase() === ch);
 	}
 
-	// Format's numbers e.g if num = 15000, it formats to 15,000.
+	// Format's numbers with commas.
 	formatNumber(num) {
 		return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
 	}
@@ -182,9 +182,9 @@ module.exports = class Util {
 		return newValue;
 	}
 
-	isWholeNumber(number) {
-		const regex = new RegExp(/^\d+$/gm);
-		return regex.test(number) ? number : false;
+	// Detects if the number is whole.
+	isInt(value) {
+		return Number.isInteger(value) && value > 0 ? value : false;
 	}
 
 	async getMember(message, memberToFind = '', returnToAuthor) {
