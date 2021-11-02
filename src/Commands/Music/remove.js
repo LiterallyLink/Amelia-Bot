@@ -9,12 +9,12 @@ module.exports = class extends Command {
 			aliases: ['track-remove'],
 			description: 'Removes a song from the queue',
 			category: 'Music',
-			guildOnly: true
+			guildOnly: true,
+			voiceChannelOnly: true
 		});
 	}
 
 	async run(message, [trackNum]) {
-		if (!this.client.music.isInChannel(message)) return;
 		if (!this.client.music.canModifyQueue(message)) return;
 
 		const { player, embed } = this.client;
@@ -31,6 +31,7 @@ module.exports = class extends Command {
 		if (!trackNum && !queue.tracks[trackNum]) {
 			const noTrackGiven = new MessageEmbed()
 				.setDescription('Please provide a valid track to remove!')
+				.setThumbnail(this.client.embed.thumbnails.ameShake)
 				.setColor(embed.color.error);
 			return message.channel.send({ embeds: [noTrackGiven] });
 		}

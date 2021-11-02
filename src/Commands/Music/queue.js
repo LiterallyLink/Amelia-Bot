@@ -9,12 +9,12 @@ module.exports = class extends Command {
 			aliases: ['q'],
 			description: 'Displays the list of songs in the queue',
 			category: 'Music',
-			guildOnly: true
+			guildOnly: true,
+			voiceChannelOnly: true
 		});
 	}
 
 	async run(message) {
-		if (!this.client.music.isInChannel(message)) return;
 		if (!this.client.music.canModifyQueue(message)) return;
 
 		const { player, embed } = this.client;
