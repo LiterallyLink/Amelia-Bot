@@ -38,6 +38,7 @@ module.exports = class extends Command {
 		const noNumberGivenEmbed = new MessageEmbed()
 			.setAuthor(`Invalid Level Provided`, message.author.displayAvatarURL())
 			.setDescription(`Please provide a valid number\n\nUsage: \`${prefix}${this.usage}\``)
+			.setThumbnail(this.client.embed.thumbnails.ameShake)
 			.setColor(this.client.embed.color.error);
 		return message.channel.send({ embeds: [noNumberGivenEmbed] });
 	}
