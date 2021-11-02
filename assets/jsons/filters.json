@@ -1,15 +1,48 @@
 {
-	"8D": "8D",
-	"bassboost": "Bassboost",
-	"nightcore": "Nightcore",
-	"normalizer": "Normalizer",
-	"phaser": "Phaser",
-	"pulsator": "Pulsator",
-	"reverse": "Reverse",
-	"superequalizer": "Superequalizer",
-	"surrounding": "Surrounding",
-	"treble": "Treble",
-	"tremolo": "Tremolo",
-	"vaporwave": "Vaporwave",
-	"vibrato": "Vibrato"
+	"8D": {
+		"description": "Applies a binaural audio filter that makes it feel like the music is moving around you"
+	},
+	"bassboost": {
+		"description": "Applies a filter which boost the audio's bass"
+	},
+	"nightcore": {
+		"description": "Applies a filter that increases the audio's tempo and pitch"
+	},
+	"normalizer": {
+		"description": "Applies a filter that balances the audio's sound levels"
+	},
+	"phaser": {
+		"description": "Balances audio levels"
+	},
+	"pulsator": {
+		"description": "Balances audio levels"
+
+	},
+	"reverse": {
+		"description": "Applies a filter that reverses the audio"
+
+	},
+	"superequalizer": {
+		"description": "Balances audio levels"
+
+	},
+	"surrounding": {
+		"description": "Plays the audio in reverse"
+	},
+	"treble": {
+		"description": "Plays the audio in reverse"
+
+	},
+	"tremolo": {
+		"description": "Plays the audio in reverse"
+
+	},
+	"vaporwave": {
+		"description": "Plays the audio in reverse"
+
+	},
+	"vibrato": {
+		"description": "Plays the audio in reverse"
+
+	}
 }
