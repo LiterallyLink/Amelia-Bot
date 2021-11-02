@@ -8,13 +8,12 @@ module.exports = class extends Command {
 			aliases: ['j'],
 			description: 'Make amelia join your current voice channel',
 			category: 'Music',
-			guildOnly: true
+			guildOnly: true,
+			voiceChannelOnly: true
 		});
 	}
 
 	async run(message) {
-		if (!this.client.music.isInChannel(message)) return;
-
 		if (message.member.voice.channel.id !== message.guild.me.voice.channel?.id) {
 			joinVoiceChannel({
 				channelId: message.member.voice.channel.id,
