@@ -1,4 +1,4 @@
-module.exports = class Database {
+module.exports = class Canvas {
 
 	constructor(client) {
 		this.client = client;
