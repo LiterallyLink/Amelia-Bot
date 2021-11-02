@@ -9,12 +9,12 @@ module.exports = class extends Command {
 			aliases: ['s'],
 			description: 'Skips the current song',
 			category: 'Music',
-			guildOnly: true
+			guildOnly: true,
+			voiceChannelOnly: true
 		});
 	}
 
 	async run(message) {
-		if (!this.client.music.isInChannel(message)) return;
 		if (!this.client.music.canModifyQueue(message)) return;
 
 		const { player, embed } = this.client;
@@ -29,10 +29,12 @@ module.exports = class extends Command {
 		}
 
 		const currentTrack = queue.current;
+
 		queue.skip();
 
 		const skippedSong = new MessageEmbed()
-			.setDescription(`Skipped! **${currentTrack}**!`)
+			.setDescription(`[${currentTrack}](${currentTrack.url}) has been skipped!`)
+			.setThumbnail(currentTrack.thumbnail)
 			.setColor(embed.color.default);
 		return message.channel.send({ embeds: [skippedSong] });
 	}
