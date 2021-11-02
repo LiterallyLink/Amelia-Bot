@@ -8,6 +8,7 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			aliases: ['coin', 'flip'],
+			description: 'Place your bet and flip a coin to win or lose it all!',
 			category: 'Gambling',
 			usage: '(heads or tails) (bet)',
 			args: true,
