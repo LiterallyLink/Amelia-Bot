@@ -18,6 +18,7 @@ module.exports = class extends Command {
 		if (!msg) {
 			const noSnipeToRetrieve = new MessageEmbed()
 				.setDescription('No messages to retrieve.')
+				.setThumbnail(this.client.embed.thumbnails.ameShake)
 				.setColor(this.client.embed.color.error);
 			return message.channel.send({ embeds: [noSnipeToRetrieve] });
 		}
