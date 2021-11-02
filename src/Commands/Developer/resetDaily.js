@@ -6,7 +6,7 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			description: 'Reset a specified users daily cooldown',
-			category: 'Economy',
+			category: 'Developer',
 			devOnly: true,
 			guildOnly: true
 		});
