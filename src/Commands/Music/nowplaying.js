@@ -10,12 +10,12 @@ module.exports = class extends Command {
 			aliases: ['np', 'current'],
 			description: 'Provides the current song playing',
 			category: 'Music',
-			guildOnly: true
+			guildOnly: true,
+			voiceChannelOnly: true
 		});
 	}
 
 	async run(message) {
-		if (!this.client.music.isInChannel(message)) return;
 		if (!this.client.music.canModifyQueue(message)) return;
 
 		const { player, embed, user } = this.client;
