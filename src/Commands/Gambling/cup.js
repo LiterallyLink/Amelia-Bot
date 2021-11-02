@@ -9,6 +9,7 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			category: 'Gambling',
+			description: 'Place your bet and guess which cup Ame is hiding under!',
 			usage: '(bet)',
 			args: true,
 			guildOnly: true
@@ -27,10 +28,19 @@ module.exports = class extends Command {
 		}
 
 		const validBet = await this.client.economy.isValidPayment(message, bet);
+		if (!validBet) return;
 
-		if (!validBet) {
-			return;
+		const current = this.client.games.get(message.channel.id);
+
+		if (current) {
+			const gameInProgress = new MessageEmbed()
+				.setDescription(`Please wait until the current game of \`${current.name}\` is finished.`)
+				.setThumbnail(this.client.embed.thumbnails.ameShake)
+				.setColor(this.client.embed.color.error);
+			return message.reply({ embeds: [gameInProgress] });
 		}
+
+		this.client.games.set(message.channel.id, { name: this.name });
 
 		const row = new MessageActionRow()
 			.addComponents(
