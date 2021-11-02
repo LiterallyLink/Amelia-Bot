@@ -15,6 +15,18 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
+		const current = this.client.games.get(message.channel.id);
+
+		if (current) {
+			const gameInProgress = new MessageEmbed()
+				.setDescription(`Please wait until the current game of \`${current.name}\` is finished.`)
+				.setThumbnail(this.client.embed.thumbnails.ameShake)
+				.setColor(this.client.embed.color.error);
+			return message.reply({ embeds: [gameInProgress] });
+		}
+
+		this.client.games.set(message.channel.id, { name: this.name });
+
 		const optionRow = new MessageActionRow()
 			.addComponents(
 				new MessageButton()
@@ -100,7 +112,12 @@ module.exports = class extends Command {
 					new MessageButton()
 						.setCustomId("don't know")
 						.setLabel("Don't Know")
-						.setStyle('SECONDARY')
+						.setStyle('SECONDARY'),
+
+					new MessageButton()
+						.setCustomId('back')
+						.setLabel('Back')
+						.setStyle('DANGER')
 				);
 
 			const secondRow = new MessageActionRow()
@@ -121,15 +138,7 @@ module.exports = class extends Command {
 						.setStyle('DANGER')
 				);
 
-			const backRow = new MessageActionRow()
-				.addComponents(
-					new MessageButton()
-						.setCustomId('back')
-						.setLabel('Back')
-						.setStyle('DANGER')
-				);
-
-			const buttonArray = answers.includes('back') ? [row, secondRow, backRow] : [row, secondRow];
+			const buttonArray = answers.includes('back') ? [row, secondRow] : [row, secondRow];
 			const gameTheme = chosenThematic === 'en' ? 'Characters' : chosenThematic === 'en_objects' ? 'Objects' : 'Animals';
 
 			const questionEmbed = new MessageEmbed()
@@ -141,7 +150,6 @@ module.exports = class extends Command {
 
 			const answerToQuestion = await this.client.utils.buttonCollector(message, questionMsg, 60000);
 
-			message.channel.sendTyping();
 
 			if (answerToQuestion === null) {
 				win = 'time';
@@ -241,6 +249,8 @@ module.exports = class extends Command {
 				}
 			}
 		}
+
+		this.client.games.delete(message.channel.id);
 
 		if (win === 'time') {
 			const timeOutEmbed = new MessageEmbed()
