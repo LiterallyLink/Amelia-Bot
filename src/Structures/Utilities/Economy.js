@@ -52,8 +52,7 @@ module.exports = class Economy {
 	async isValidPayment(message, bet) {
 		const balance = await this.getCredits(message.author.id, message.guild.id);
 
-		// eslint-disable-next-line no-bitwise
-		const validPayment = bet > 0 && bet % 1 === 0 && balance >= bet;
+		const validPayment = Number.isInteger(bet) || balance >= bet;
 
 		if (!bet || !validPayment) {
 			const howToPlayEmbed = new MessageEmbed()
