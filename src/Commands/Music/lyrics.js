@@ -11,12 +11,12 @@ module.exports = class extends Command {
 			aliases: ['ly'],
 			description: 'Provides lyrics for the current song',
 			category: 'Music',
-			guildOnly: true
+			guildOnly: true,
+			voiceChannelOnly: true
 		});
 	}
 
 	async run(message) {
-		if (!this.client.music.isInChannel(message)) return;
 		if (!this.client.music.canModifyQueue(message)) return;
 
 		const { player, embed } = this.client;
@@ -35,6 +35,7 @@ module.exports = class extends Command {
 		if (song === null) {
 			const noLyrics = new MessageEmbed()
 				.setDescription(`I couldn't find lyrics for this track!`)
+				.setThumbnail(this.client.embed.thumbnails.ameShake)
 				.setColor(embed.color.error);
 			return message.channel.send({ embeds: [noLyrics] });
 		}
@@ -43,7 +44,7 @@ module.exports = class extends Command {
 			.setTitle(queue.current.title)
 			.setThumbnail(queue.thumbnail)
 			.setColor(embed.color.default)
-			.setDescription(`${song.lyrics}`);
+			.setDescription(`${song.lyrics.slice(0, 4096)}`);
 		return message.channel.send({ embeds: [lyricsEmbed] });
 	}
 
