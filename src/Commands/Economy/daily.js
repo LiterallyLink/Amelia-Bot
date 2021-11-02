@@ -5,7 +5,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			description: 'Claim your daily holocoins! Be sure to claim on consecutive days to earn a streak bonus!',
+			description: 'Claim holocoins and form a daily streak for bonus coins!',
 			category: 'Economy',
 			guildOnly: true
 		});
@@ -41,6 +41,7 @@ module.exports = class extends Command {
 			const durationTillNextDaily = new MessageEmbed()
 				.setDescription(`You've already claimed your daily for today!\nYou can claim again in ${this.client.utils.formatMS(msDifference)}.`)
 				.setFooter('Dailies reset at 12am UTC')
+				.setThumbnail(this.client.embed.thumbnails.ameShake)
 				.setColor(this.client.embed.color.error);
 			return message.reply({ embeds: [durationTillNextDaily] });
 		}
