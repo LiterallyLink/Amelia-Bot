@@ -10,12 +10,12 @@ module.exports = class extends Command {
 			description: 'Toggle the queue loop',
 			category: 'Music',
 			usage: ', loop queue, loop song',
-			guildOnly: true
+			guildOnly: true,
+			voiceChannelOnly: true
 		});
 	}
 
 	async run(message, [loopOption]) {
-		if (!this.client.music.isInChannel(message)) return;
 		if (!this.client.music.canModifyQueue(message)) return;
 
 		const { player, embed } = this.client;
