@@ -20,6 +20,7 @@ module.exports = class extends Command {
 		if (current) {
 			const gameInProgress = new MessageEmbed()
 				.setDescription(`Please wait until the current game of \`${current.name}\` is finished.`)
+				.setThumbnail(this.client.embed.thumbnails.ameShake)
 				.setColor(this.client.embed.color.error);
 			return message.reply({ embeds: [gameInProgress] });
 		}
