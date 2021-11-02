@@ -9,12 +9,13 @@ module.exports = class extends Command {
 			description: 'Skips to a specified track',
 			category: 'Music',
 			usage: '`1`',
-			guildOnly: true
+			args: true,
+			guildOnly: true,
+			voiceChannelOnly: true
 		});
 	}
 
 	async run(message, [trackNum]) {
-		if (!this.client.music.isInChannel(message)) return;
 		if (!this.client.music.canModifyQueue(message)) return;
 
 		const { player, embed } = this.client;
@@ -30,9 +31,10 @@ module.exports = class extends Command {
 
 		trackNum -= 1;
 
-		if (!trackNum || !queue.tracks[trackNum]) {
+		if (!queue.tracks[trackNum]) {
 			const noTrackGiven = new MessageEmbed()
 				.setDescription('Please provide a valid track to skip to.')
+				.setThumbnail(this.client.embed.thumbnails.ameShake)
 				.setColor(embed.color.error);
 			return message.channel.send({ embeds: [noTrackGiven] });
 		}
