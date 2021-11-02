@@ -8,18 +8,18 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Shuffles the current queue',
 			category: 'Music',
-			guildOnly: true
+			guildOnly: true,
+			voiceChannelOnly: true
 		});
 	}
 
 	async run(message) {
-		if (!this.client.music.isInChannel(message)) return;
 		if (!this.client.music.canModifyQueue(message)) return;
 
 		const { player, embed } = this.client;
 		const queue = player.getQueue(message.guild.id);
 
-		if (!queue || queue.tracks.length < 1) {
+		if (!queue || !queue.playing || queue.tracks.length < 1) {
 			const noQueue = new MessageEmbed()
 				.setDescription('There are not enough songs in the queue to shuffle!')
 				.setThumbnail(embed.thumbnails.ameShake)
