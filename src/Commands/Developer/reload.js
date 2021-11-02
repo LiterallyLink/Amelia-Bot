@@ -18,6 +18,7 @@ module.exports = class extends Command {
 			const noCommandProvided = new MessageEmbed()
 				.setAuthor(message.author.username, message.author.displayAvatarURL({ dynamic: true }))
 				.setDescription(`Please enter the command name for reload!`)
+				.setThumbnail(this.client.embed.thumbnails.ameShake)
 				.setColor(this.client.embed.color.error)
 				.setTimestamp();
 			return message.channel.send({ embeds: [noCommandProvided] });
@@ -43,6 +44,7 @@ module.exports = class extends Command {
 		} else {
 			const commandNotFound = new MessageEmbed()
 				.setAuthor(message.author.username, message.author.displayAvatarURL({ dynamic: true }))
+				.setThumbnail(this.client.embed.thumbnails.ameShake)
 				.setDescription(`Could not find command named **${cmd}**!`)
 				.setColor(this.client.embed.color.error)
 				.setTimestamp();
