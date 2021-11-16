@@ -26,6 +26,7 @@ module.exports = class extends Command {
 		}
 
 		const validPayment = await this.client.economy.isValidPayment(message, bet);
+
 		if (!validPayment) return;
 
 		const current = this.client.games.get(message.channel.id);
