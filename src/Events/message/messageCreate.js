@@ -30,7 +30,12 @@ module.exports = class extends Event {
 		const command = commands.get(cmd.toLowerCase()) || commands.get(aliases.get(cmd.toLowerCase()));
 
 		if (!command) {
-			return;
+			const { customCommands } = await this.client.database.fetchGuild(message.guild);
+			const customCmd = customCommands.find(customCommand => customCommand.name === cmd);
+
+			if (!customCmd) return;
+
+			return message.channel.send({ content: `${customCmd.content}` });
 		}
 
 		if (command.devOnly && !utils.userIsADev(message.author)) return;
@@ -50,7 +55,7 @@ module.exports = class extends Event {
 					const missingPermissionsEmbed = new MessageEmbed()
 						.setAuthor('Missing Permissions', message.author.displayAvatarURL())
 						.setThumbnail(embed.thumbnails.ameShake)
-						.addField('To run this command, you need these permissions.', `${utils.formatArray(missingUserPermissions.map(utils.formatPermissions))}`)
+						.addField('To run this command, you need these permissions.', `\`\`\`${missingUserPermissions}\`\`\``)
 						.setColor(embed.color.error);
 					return message.reply({ embeds: [missingPermissionsEmbed] });
 				}
@@ -63,7 +68,7 @@ module.exports = class extends Event {
 					const missingPermissionsEmbed = new MessageEmbed()
 						.setAuthor('Missing Permissions', user.displayAvatarURL())
 						.setThumbnail(embed.thumbnails.ameShake)
-						.addField('To run this command, I need these permissions.', `${utils.formatArray(missingBotPermissions.map(utils.formatPermissions))}`)
+						.addField('To run this command, I need these permissions.', `\`\`\`${utils.formatArray(missingBotPermissions.map(utils.formatPermissions))}\`\`\``)
 						.setColor(embed.color.error);
 					return message.reply({ embeds: [missingPermissionsEmbed] });
 				}
