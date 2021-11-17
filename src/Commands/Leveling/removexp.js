@@ -41,7 +41,7 @@ module.exports = class extends Command {
 		const updated = await this.client.database.fetchUser(target.id, message.guild.id);
 
 		const updatedXpEmbed = new MessageEmbed()
-			.setAuthor(`Deducted ${xpAmount} XP from ${target.username}`, target.displayAvatarURL())
+			.setAuthor(`Deducted ${args[1]} XP from ${target.username}`, target.displayAvatarURL())
 			.addField('Previous XP', `${previous.xp}`, true)
 			.addField('Updated XP', `${updated.xp}`, true)
 			.setColor(this.client.embed.color.default);
