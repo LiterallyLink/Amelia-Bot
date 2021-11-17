@@ -94,15 +94,13 @@ module.exports = class Util {
 		return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
 	}
 
-	formatMS(milliseconds) {
-		const totalSeconds = milliseconds / 1000;
+	msToTime(ms) {
+		const totalSeconds = ms / 1000;
 		const hr = (totalSeconds % 86400) / 3600;
 		const min = (totalSeconds % 3600) / 60;
 		const sec = totalSeconds % 60;
-		const mili = milliseconds % 1000;
 
-		return (hr > 1 ? `${Math.floor(hr)}h ` : '') + (min > 1 ? `${Math.floor(min)}m ` : '') +
-		((min === 0) || sec > 1 || mili > 0 ? `${Math.floor(sec)}s` : '');
+		return `${(hr > 0 ? `${Math.floor(hr)}h ` : '') + (min > 0 ? `${Math.floor(min)}m ` : '')}${Math.floor(sec)}s`;
 	}
 
 	formatPermissions(perm) {
@@ -184,7 +182,13 @@ module.exports = class Util {
 
 	// Detects if the number is whole.
 	isInt(value) {
-		return Number.isInteger(value) && value > 0 ? value : false;
+		value = parseInt(value);
+		return Number.isInteger(value) && value > 0;
+	}
+
+	msToDate(ms) {
+		const date = new Date(ms);
+		return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 	}
 
 	async getMember(message, memberToFind = '', returnToAuthor) {
