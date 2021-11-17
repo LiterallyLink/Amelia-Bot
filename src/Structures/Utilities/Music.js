@@ -64,7 +64,7 @@ module.exports = class Music {
 	durationAsString(duration) {
 		const secondDuration = this.getSeconds(duration) * 1000;
 
-		return this.client.utils.formatMS(secondDuration);
+		return this.client.utils.msToTime(secondDuration);
 	}
 
 	format(str) {
