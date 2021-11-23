@@ -33,41 +33,34 @@ module.exports = class extends Command {
 				.setDescription(`${categoryCommands}`)
 				.setFooter(`For more information on a command, use ${prefix}help (command)`)
 				.setColor(embed.color.default);
-
 			return message.reply({ embeds: [categoryHelpEmbed] });
 		} else if (commandOrCategory === 'isCommand') {
 			query = query.toLowerCase();
 			const command = commands.get(query) || commands.get(aliases.get(query));
+			const commandAliases = command.aliases.map(alias => `\`${alias}\``).join(' ') || '``None``';
 
 			const commandHelpEmbed = new MessageEmbed()
 				.setAuthor(`${this.client.utils.capitalise(command.name)} Command Help`, this.client.user.displayAvatarURL())
 				.setThumbnail(embed.thumbnails.ameRead)
-				.addField('Aliases:', `${command.aliases.length ? command.aliases.map(alias => `\`${alias}\``).join(' ') : 'No Aliases'}`, true)
+				.addField('Aliases:', `${commandAliases}`, true)
 				.addField('Description:', `${command.description}`, true)
 				.addField('Category:', `${command.category}`, true)
 				.addField('Usage:', `${command.usage}`, true)
 				.setColor(embed.color.default);
-
 			return message.reply({ embeds: [commandHelpEmbed] });
-		} else {
-			if (message.guild) {
-				const guild = await this.client.database.fetchGuild(message.guild);
-				categories = categories.filter((enabledCategories) => !guild.disabledModules.includes(enabledCategories));
-			}
-
-			const defaultHelpMenu = new MessageEmbed()
-				.setAuthor("Amelia's Help Menu", this.client.user.displayAvatarURL())
-				.setThumbnail(embed.thumbnails.ameRead)
-				.setFooter(`For more information, use ${prefix}help (category) or ${prefix}help (command)`)
-				.setColor(embed.color.default);
-
-			for (const category of categories) {
-				defaultHelpMenu.addField(`**${this.client.utils.capitalise(category)}**`,
-					`\`${prefix}help ${category.toLowerCase()}\``, true);
-			}
-
-			return message.reply({ embeds: [defaultHelpMenu] });
 		}
+
+		const defaultHelpMenu = new MessageEmbed()
+			.setAuthor("Amelia's Help Menu", this.client.user.displayAvatarURL())
+			.setThumbnail(embed.thumbnails.ameRead)
+			.setFooter(`For more information, use ${prefix}help (category) or ${prefix}help (command)`)
+			.setColor(embed.color.default);
+
+		for (const category of categories) {
+			defaultHelpMenu.addField(`**${this.client.utils.capitalise(category)}**`,
+				`\`${prefix}help ${category.toLowerCase()}\``, true);
+		}
+		return message.reply({ embeds: [defaultHelpMenu] });
 	}
 
 	commandOrCategory(query, categories, commandList, aliases) {
@@ -84,3 +77,4 @@ module.exports = class extends Command {
 	}
 
 };
+
