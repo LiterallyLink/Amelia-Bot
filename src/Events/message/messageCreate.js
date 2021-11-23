@@ -5,77 +5,86 @@ const { MessageEmbed } = require('discord.js');
 module.exports = class extends Event {
 
 	async run(message) {
-		if (message.author.bot) return;
+		if (message.author.bot || !message.channel.permissionsFor(this.client.user).has('SEND_MESSAGES')) return;
 
-		const { user, commands, aliases, utils, database, level, music, embed, defaultPerms } = this.client;
+		const prefixRegex = RegExp(`^<@!?${this.client.user.id}> `);
+		const prefixMatch = message.content.match(prefixRegex);
+		const dbPrefix = await this.client.database.getPrefix(message);
 
-		const prefixRegexp = RegExp(`^<@!?${user.id}> `);
+		let prefix = prefixMatch ? prefixMatch[0] : dbPrefix;
 
-		let prefix = message.content.match(prefixRegexp) ? message.content.match(prefixRegexp)[0] : await database.getPrefix(message);
-
-		const mentionRegex = RegExp(`^<@!?${user.id}>$`);
+		const mentionRegex = RegExp(`^<@!?${this.client.user.id}>$`);
 
 		if (message.content.match(mentionRegex)) {
 			return message.reply({ content: `To use a command, use the current prefix \`${prefix}\`, or use my mention as the prefix.` });
 		}
 
-		if (message.guild && !message.content.startsWith(prefix)) {
-			return await level.assignXP(message);
+		if (message.guild && message.content.substring(0, prefix.length).toLowerCase() !== prefix.toLowerCase()) {
+			return await this.client.level.assignXP(message);
 		}
 
 		prefix = prefix.toLowerCase();
 
 		const [cmd, ...args] = message.content.slice(prefix.length).trim().split(/ +/g);
 
-		const command = commands.get(cmd.toLowerCase()) || commands.get(aliases.get(cmd.toLowerCase()));
+		const command = this.client.commands.get(cmd.toLowerCase()) || this.client.commands.get(this.client.aliases.get(cmd.toLowerCase()));
 
 		if (!command) {
-			const { customCommands } = await this.client.database.fetchGuild(message.guild);
-			const customCmd = customCommands.find(customCommand => customCommand.name === cmd);
+			const guildDocument = await this.client.database.fetchGuild(message.guild);
+			const { customCommands } = guildDocument;
+			const customCmd = customCommands.get(cmd);
 
-			if (!customCmd) return;
+			if (customCmd) {
+				if (customCmd?.content) message.channel.send({ content: `${customCmd.content}` });
+				if (customCmd?.attachment) message.channel.send({ content: `${customCmd.attachment}` });
+			}
 
-			return message.channel.send({ content: `${customCmd.content}` });
+			return;
 		}
+
+		const { utils, defaultPerms } = this.client;
 
 		if (command.devOnly && !utils.userIsADev(message.author)) return;
 		if (command.guildOnly && !message.guild) return;
-		if (command.voiceChannelOnly && !music.isInChannel(message)) return;
 		if (utils.userCooldown(message, command)) return;
+		if (command.voiceChannelOnly && !this.client.music.isInChannel(message)) return;
 		if (utils.commandRequiresArguments(message, command, args)) return;
 
 		if (message.guild) {
 			const userPermCheck = command.userPerms ? defaultPerms.add(command.userPerms) : defaultPerms;
-			const botPermCheck = command.botPerms ? defaultPerms.add(command.botPerms) : defaultPerms;
 
 			if (userPermCheck) {
 				const missingUserPermissions = message.channel.permissionsFor(message.member).missing(userPermCheck);
+				const formattedPermissions = utils.formatArray(missingUserPermissions.map(utils.formatPermissions));
 
 				if (missingUserPermissions.length) {
 					const missingPermissionsEmbed = new MessageEmbed()
 						.setAuthor('Missing Permissions', message.author.displayAvatarURL())
-						.setThumbnail(embed.thumbnails.ameShake)
-						.addField('To run this command, you need these permissions.', `\`\`\`${missingUserPermissions}\`\`\``)
-						.setColor(embed.color.error);
+						.setThumbnail(this.client.embed.thumbnails.ameShake)
+						.addField('To run this command, you need these permissions.', `\`\`\`${formattedPermissions}\`\`\``)
+						.setColor(this.client.embed.color.error);
 					return message.reply({ embeds: [missingPermissionsEmbed] });
 				}
 			}
 
+			const botPermCheck = command.botPerms ? defaultPerms.add(command.botPerms) : defaultPerms;
+
 			if (botPermCheck) {
-				const missingBotPermissions = message.channel.permissionsFor(user).missing(botPermCheck);
+				const missingBotPermissions = message.channel.permissionsFor(this.client.user).missing(botPermCheck);
+				const formattedPermissions = utils.formatArray(missingBotPermissions.map(utils.formatPermissions));
 
 				if (missingBotPermissions.length) {
 					const missingPermissionsEmbed = new MessageEmbed()
-						.setAuthor('Missing Permissions', user.displayAvatarURL())
-						.setThumbnail(embed.thumbnails.ameShake)
-						.addField('To run this command, I need these permissions.', `\`\`\`${utils.formatArray(missingBotPermissions.map(utils.formatPermissions))}\`\`\``)
-						.setColor(embed.color.error);
+						.setAuthor('Missing Permissions', this.client.user.displayAvatarURL())
+						.setThumbnail(this.client.embed.thumbnails.ameShake)
+						.addField('To run this command, I need these permissions.', `\`\`\`${formattedPermissions}\`\`\``)
+						.setColor(this.client.embed.color.error);
 					return message.reply({ embeds: [missingPermissionsEmbed] });
 				}
 			}
 		}
 
-		command.run(message, args, prefix);
+		command.run(message, args, dbPrefix);
 	}
 
 };
