@@ -1,6 +1,5 @@
 const { MessageEmbed } = require('discord.js');
 const Command = require('../../Structures/Command');
-const ms = require('ms');
 
 module.exports = class extends Command {
 
@@ -14,7 +13,7 @@ module.exports = class extends Command {
 	async run(message) {
 		const botLatency = `\`${Date.now() - message.createdTimestamp}ms\``;
 		const apiLatency = `\`${Math.round(this.client.ws.ping)}ms\``;
-		const uptime = `\`${ms(this.client.uptime, { long: true })}\``;
+		const uptime = `\`${this.client.utils.msToTime(this.client.uptime, { long: true })}\``;
 
 		const pingResponseEmbed = new MessageEmbed()
 			.setDescription(`Bot Latency: ${botLatency}\n API Latency: ${apiLatency}\n Uptime: ${uptime}`)
