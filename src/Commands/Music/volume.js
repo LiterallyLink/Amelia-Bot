@@ -36,10 +36,11 @@ module.exports = class extends Command {
 			return message.channel.send({ embeds: [voiceEmbed] });
 		}
 
-		if (!this.client.utils.isInt(vol) || vol > 100) {
+		if (!this.client.utils.isInt(vol) || vol > 200) {
 			const voiceEmbed = new MessageEmbed()
-				.setDescription(`Please provide a valid number to set the volume to`)
+				.setDescription(`\`\`\`Please provide a valid number to set the volume to\`\`\``)
 				.setThumbnail(embed.thumbnails.ameShake)
+				.setFooter(`Volume values may be between 0-200`)
 				.setColor(embed.color.error);
 			return message.channel.send({ embeds: [voiceEmbed] });
 		}
