@@ -17,13 +17,31 @@
 		"profileBackdrop": "#b2573f",
 		"embedColor": "#e97550"
 	},
-	"kroniCard1": {
-		"backgroundURL": "https://i.ibb.co/QNY7p5b/kiara-Rankcard.png",
-		"strokeColor": "#e97550",
-		"rankAndLevelBars": "#81b6b6",
-		"topBar": "#81b6b6",
-		"bottomBar": "#5b7c7c",
-		"profileBackdrop": "#b2573f",
-		"embedColor": "#e97550"
+	"inaCard1": {
+		"backgroundURL": "https://i.ibb.co/VwMQxLz/rankCard.png",
+		"strokeColor": "#40315b",
+		"rankAndLevelBars": "#7e67a6",
+		"topBar": "#7e67a6",
+		"bottomBar": "#40315b",
+		"profileBackdrop": "#dcc1a9",
+		"embedColor": "#40315b"
+	},
+	"moriCard1": {
+		"backgroundURL": "https://i.ibb.co/r74NHsh/rank-Card-Recovered.png",
+		"strokeColor": "#c082a9",
+		"rankAndLevelBars": "#ad5c8f",
+		"topBar": "#D1A3C0",
+		"bottomBar": "#ad5c8f",
+		"profileBackdrop": "#382F40",
+		"embedColor": "#c082a9"
+	},
+	"guraCard1": {
+		"backgroundURL": "https://i.ibb.co/F0JpQwz/rank-Card-Recovered.png",
+		"strokeColor": "#437497",
+		"rankAndLevelBars": "#549fd4",
+		"topBar": "#8ccde1",
+		"bottomBar": "#549fd4",
+		"profileBackdrop": "#13344b",
+		"embedColor": "#437497"
 	}
 }
