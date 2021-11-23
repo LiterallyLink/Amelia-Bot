@@ -13,7 +13,7 @@ module.exports = class Command {
 		this.botPerms = new Permissions(options.botPerms).freeze();
 		this.guildOnly = options.guildOnly || false;
 		this.voiceChannelOnly = options.voiceChannelOnly || false;
-		this.devOnly = options.developers || false;
+		this.devOnly = options.devOnly || false;
 		this.nsfw = options.nsfw || false;
 		this.args = options.args || false;
 	}
