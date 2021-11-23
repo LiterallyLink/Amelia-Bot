@@ -52,12 +52,12 @@ module.exports = class Economy {
 	async isValidPayment(message, bet) {
 		const balance = await this.getCredits(message.author.id, message.guild.id);
 
-		const validPayment = Number.isInteger(bet) || balance >= bet;
+		const validPayment = this.client.utils.isInt(bet) && balance >= bet;
 
-		if (!bet || !validPayment) {
+		if (!validPayment) {
 			const howToPlayEmbed = new MessageEmbed()
-				.addField('Invalid Payment', 'Please provide a valid amount of holocoins.')
-				.addField('Current Balance', `You have ${balance} holocoins`)
+				.addField('Invalid Payment', 'Please provide a valid amount of credits.')
+				.addField('Current Balance', `You have ${balance} credits`)
 				.setColor(this.client.embed.color.error);
 			message.reply({ embeds: [howToPlayEmbed] });
 		}
