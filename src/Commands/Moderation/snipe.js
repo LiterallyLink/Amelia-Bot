@@ -7,7 +7,7 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Retrieves the most recently deleted message.',
 			category: 'Moderation',
-			userPerms: ['ADMINISTRATOR'],
+			userPerms: ['MANAGE_MESSAGES'],
 			guildOnly: true
 		});
 	}
@@ -25,7 +25,8 @@ module.exports = class extends Command {
 
 		const snipedMessage = new MessageEmbed()
 			.setAuthor(`Sniped Message:`)
-			.setDescription(`${msg.content}\nUser: ${msg.author} | ID: ${msg.author.id}`)
+			.addField(`Message`, `${msg.content ? msg.content : 'No Message'}`)
+			.addField(`Sender`, `User: ${msg.author} | ID: ${msg.author.id}`)
 			.setColor(this.client.embed.color.default);
 
 		if (msg.image) {
