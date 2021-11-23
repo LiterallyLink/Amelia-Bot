@@ -9,7 +9,7 @@ module.exports = class extends Command {
 			description: "Change Amelia's command prefix",
 			category: 'Settings',
 			usage: '[optional prefix], prefix reset',
-			userPerms: ['ADMINISTRATOR'],
+			userPerms: ['MANAGE_GUILD'],
 			guildOnly: true
 		});
 	}
@@ -25,10 +25,10 @@ module.exports = class extends Command {
 		}
 
 		if (prefix === 'reset') {
-			await guildSchema.findOneAndUpdate({ guildID: message.guild.id }, { guildID: message.guild.id, prefix: 'a!' });
+			await guildSchema.findOneAndUpdate({ guildID: message.guild.id }, { guildID: message.guild.id, prefix: this.client.prefix });
 
 			const resetPrefix = new MessageEmbed()
-				.setDescription(`The command prefix has been reset to \`a!\``)
+				.setDescription(`The command prefix has been reset to \`${this.client.prefix}\``)
 				.setColor(this.client.embed.color.default);
 			return message.channel.send({ embeds: [resetPrefix] });
 		}
