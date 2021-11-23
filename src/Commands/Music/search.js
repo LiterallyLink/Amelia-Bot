@@ -9,7 +9,8 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Searches and plays songs of your choice',
 			category: 'Music',
-			guildOnly: true
+			guildOnly: true,
+			voiceChannelOnly: true
 		});
 	}
 
@@ -108,9 +109,10 @@ module.exports = class extends Command {
 				return message.reply({ embeds: [unableToJoinVC] });
 			}
 
+			searchResultMsg.delete();
 			const selectedSong = maxTracks.filter(song => song.id === songSelector.values[0]);
 
-			queue.addTrack(selectedSong[0]);
+			await queue.addTrack(selectedSong[0]);
 
 			if (!queue.playing) await queue.play();
 		} else {
