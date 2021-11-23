@@ -2,7 +2,7 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = (client, queue, track) => {
 	if (queue.playing) {
-		const formattedTimeTillNextSong = client.utils.formatMS(queue.totalTime - queue.streamTime);
+		const formattedTimeTillNextSong = client.utils.msToTime(queue.totalTime - queue.streamTime);
 
 		const queueLength = queue.tracks.length;
 
