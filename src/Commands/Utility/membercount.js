@@ -43,7 +43,6 @@ module.exports = class extends Command {
 			{ status: 'Offline', amount: 0, color: '#5d5d5d' }
 		];
 
-
 		await message.guild.members.fetch({ withPresences: true }).then(userList => {
 			userList.forEach(user => {
 				const userStatus = user.presence ? user.presence.status : 'offline';
