@@ -38,7 +38,7 @@ module.exports = class extends Command {
 			message.reply({ embeds: [evaluatedCode] });
 		} catch (error) {
 			const invalidCode = new MessageEmbed()
-				.setTitle('Error')
+				.setTitle('Invalid Code')
 				.addField('Error', `${error}`)
 				.setThumbnail(this.client.embed.thumbnails.ameShake)
 				.setColor(this.client.embed.color.error);
