@@ -7,7 +7,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			aliases: 'aki',
+			aliases: ['aki'],
 			description: "Think about a real or fictional character, and I'll do my best to guess who it is.",
 			category: 'Fun',
 			guildOnly: true
@@ -56,6 +56,7 @@ module.exports = class extends Command {
 		message.channel.sendTyping();
 
 		if (chosenThematic === null) {
+			this.client.games.delete(message.channel.id);
 			return message.channel.send({ content: 'The game has been cancelled due to inactivity.' });
 		}
 
@@ -150,6 +151,7 @@ module.exports = class extends Command {
 
 			const answerToQuestion = await this.client.utils.buttonCollector(message, questionMsg, 60000);
 
+			await questionMsg.delete();
 
 			if (answerToQuestion === null) {
 				win = 'time';
@@ -190,14 +192,16 @@ module.exports = class extends Command {
 					.addComponents(
 						new MessageButton()
 							.setCustomId('yes')
-							.setLabel('Yes')
+							.setLabel('✅')
 							.setStyle('SUCCESS'),
 
 						new MessageButton()
 							.setCustomId('no')
-							.setLabel('No')
+							.setLabel('❌')
 							.setStyle('DANGER')
 					);
+
+				this.client.games.delete(message.channel.id);
 
 				const guessEmbed = new MessageEmbed()
 					.setTitle(`I'm ${Math.round(guess.proba * 100)}% sure it's...`)
@@ -249,8 +253,6 @@ module.exports = class extends Command {
 				}
 			}
 		}
-
-		this.client.games.delete(message.channel.id);
 
 		if (win === 'time') {
 			const timeOutEmbed = new MessageEmbed()
