@@ -58,7 +58,7 @@ module.exports = class Database {
 			guildName: guild.name
 		});
 
-		newGuild.save()
+		await newGuild.save()
 			.then(result => console.log(result))
 			.catch(error => console.error(error));
 
