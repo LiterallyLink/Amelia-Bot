@@ -6,6 +6,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
+			aliases: ['avi', 'pfp'],
 			description: 'Provides the avatar of a specified user.',
 			category: 'Miscellaneous',
 			usage: '(userId), avatar (@user)',
@@ -14,7 +15,7 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
-		const member = await this.client.utils.getMember(message, args.join(' '), true);
+		const member = await this.client.utils.getMember(message, args.join(' ')) || message.author;
 
 		const displayAvatarEmbed = new MessageEmbed()
 			.setAuthor(`${member.username}'s profile picture`)
