@@ -6,7 +6,7 @@ const guildSchema = new mongoose.Schema({
 	guildName: { type: String, required: true, unique: true },
 	disabledModules: { type: Array, default: [] },
 	disabledCommands: { type: Array, default: [] },
-	customCommands: { type: Array, default: [] },
+	customCommands: { type: Map, default: new Map() },
 	prefix: { type: String, required: true, default: config.prefix },
 	xpSettings: { minXPGain: { type: Number, default: 15 }, maxXPGain: { type: Number, default: 25 } },
 	kickLog: { type: Array, default: [] },
