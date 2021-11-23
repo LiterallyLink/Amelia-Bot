@@ -9,8 +9,8 @@ module.exports = class extends Command {
 			description: "Clear's a specified amount of messages from the designated channel",
 			category: 'Moderation',
 			usage: '(amount)',
-			userPerms: ['ADMINISTRATOR'],
-			botPerms: ['ADMINISTRATOR'],
+			userPerms: ['MANAGE_MESSAGES'],
+			botPerms: ['MANAGE_MESSAGES'],
 			args: true,
 			guildOnly: true
 		});
