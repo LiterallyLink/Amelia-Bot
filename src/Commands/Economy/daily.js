@@ -39,7 +39,7 @@ module.exports = class extends Command {
 			const msDifference = currentDate.getTime() - new Date(Date.now());
 
 			const durationTillNextDaily = new MessageEmbed()
-				.setDescription(`You've already claimed your daily for today!\nYou can claim again in ${this.client.utils.formatMS(msDifference)}.`)
+				.setDescription(`You've already claimed your daily for today!\nYou can claim again in ${this.client.utils.msToTime(msDifference)}.`)
 				.setFooter('Dailies reset at 12am UTC')
 				.setThumbnail(this.client.embed.thumbnails.ameShake)
 				.setColor(this.client.embed.color.error);
