@@ -17,21 +17,20 @@ module.exports = class extends Command {
 	}
 
 	async run(message, [toClear]) {
-		if (!toClear || toClear <= 0 || toClear > 100) {
-			const ErrorEmbed = new MessageEmbed()
+		if (!this.client.utils.isInt(toClear) || toClear < 1 || toClear > 100) {
+			const invalidNumEmbed = new MessageEmbed()
 				.setTitle('Youch! I bumped into an error!')
-				.setColor(0xff0000)
-				.addField('Error', `\`\`\`Please specify how many messages you would like to delete 1-100\`\`\``)
-				.setTimestamp();
-
-			return message.channel.send(ErrorEmbed);
+				.setDescription('Please provide a valid number of messages to clear!')
+				.setThumbnail(this.client.embed.thumbnails.ameShake)
+				.setColor(this.client.embed.color.error);
+			return message.channel.send({ embeds: [invalidNumEmbed] });
 		}
 
 		await message.delete();
 
-		return message.channel.bulkDelete(toClear)
-			.then(() => message.channel.send(`${toClear} message(s) were cleared!`)
-				.then((msg) => msg.delete()));
+		await message.channel.bulkDelete(toClear);
+
+		return message.channel.send(`${toClear} message(s) were cleared!`);
 	}
 
 };
