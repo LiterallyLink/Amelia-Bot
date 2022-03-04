@@ -10,6 +10,7 @@ module.exports = class extends Event {
 		const prefixRegex = RegExp(`^<@!?${this.client.user.id}> `);
 		const prefixMatch = message.content.match(prefixRegex);
 		const dbPrefix = await this.client.database.getPrefix(message);
+		const guildDocument = await this.client.database.fetchGuild(message.guild);
 
 		let prefix = prefixMatch ? prefixMatch[0] : dbPrefix;
 
@@ -19,7 +20,11 @@ module.exports = class extends Event {
 			return message.reply({ content: `To use a command, use the current prefix \`${prefix}\`, or use my mention as the prefix.` });
 		}
 
-		if (message.guild && message.content.substring(0, prefix.length).toLowerCase() !== prefix.toLowerCase()) {
+		if (guildDocument.antiInvites && message.content.match(/discord(?:\.gg|app\.com\/invite)\/.+/)) {
+			if (!message.deleted) message.delete();
+		}
+
+		if (message.guild && !message.content.toLowerCase().startsWith(prefix.toLowerCase())) {
 			return await this.client.level.assignXP(message);
 		}
 
@@ -30,7 +35,6 @@ module.exports = class extends Event {
 		const command = this.client.commands.get(cmd.toLowerCase()) || this.client.commands.get(this.client.aliases.get(cmd.toLowerCase()));
 
 		if (!command) {
-			const guildDocument = await this.client.database.fetchGuild(message.guild);
 			const { customCommands } = guildDocument;
 			const customCmd = customCommands.get(cmd);
 
