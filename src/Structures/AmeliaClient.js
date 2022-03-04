@@ -20,6 +20,8 @@ module.exports = class AmeliaClient extends Client {
 
 		this.commands = new Collection();
 
+		this.slashCommands = new Collection();
+
 		this.aliases = new Collection();
 
 		this.events = new Collection();
@@ -67,7 +69,6 @@ module.exports = class AmeliaClient extends Client {
 		this.utils.loadCommands();
 		this.utils.loadEvents();
 		this.utils.loadPlayerEvents();
-		this.mongoose.init();
 
 		await super.login(token);
 	}
