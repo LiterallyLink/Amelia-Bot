@@ -16,10 +16,7 @@ module.exports = class extends Event {
 			`Loaded ${this.client.player._eventsCount} player events!`
 		].join('\n'));
 
-		const guilds = this.client.guilds.cache.map(guild => guild);
-		for (let i = 0; i < guilds.length; i++) {
-			await this.client.database.fetchGuild(guilds[i]);
-		}
+		await this.client.user.setActivity(`a!help | Unreleased Beta`, { type: 'WATCHING' });
 	}
 
 };
