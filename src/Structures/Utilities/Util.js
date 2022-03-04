@@ -1,10 +1,14 @@
+/* eslint-disable array-callback-return */
 const Command = require('../Command.js');
 const { MessageEmbed, Collection } = require('discord.js');
 const Event = require('../Event.js');
+const { token } = require('../../../config.json');
 const path = require('path');
 const { promisify } = require('util');
 const emojis = require('../../../assets/jsons/emotes.json');
 const glob = promisify(require('glob'));
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
 
 module.exports = class Util {
 
@@ -181,14 +185,15 @@ module.exports = class Util {
 	}
 
 	// Detects if the number is whole.
-	isInt(value) {
-		value = parseInt(value);
-		return Number.isInteger(value) && value > 0;
-	}
 
 	msToDate(ms) {
 		const date = new Date(ms);
 		return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+	}
+
+	// number must not contain anything but numbers, must be greater than zero, and must be a whole number.
+	isInt(num) {
+		return /^[0-9]+$/.test(num) && num > 0 && Number.isInteger(parseInt(num));
 	}
 
 	async getMember(message, memberToFind = '', returnToAuthor) {
@@ -271,6 +276,19 @@ module.exports = class Util {
 		return optionID;
 	}
 
+
+	async clearSlashCommands() {
+		const clientId = '724481965000228886';
+		const rest = new REST({ version: '9' }).setToken(token);
+		rest.get(Routes.applicationCommands(clientId)).then(data => {
+			const promises = [];
+			for (const command of data) {
+				const deleteUrl = `${Routes.applicationCommands(clientId)}/${command.id}`;
+				promises.push(rest.delete(deleteUrl));
+			}
+			return Promise.all(promises);
+		});
+	}
 	// Loads and sets all commands to a collection for the bot to interpret.
 	async loadCommands() {
 		return glob(`${this.directory}commands/**/*.js`).then(commands => {
