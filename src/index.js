@@ -4,10 +4,7 @@ const { Player } = require('discord-player');
 const config = require('../config.json');
 
 const client = new AmeliaClient(config);
-client.player = new Player(client, { ytdlOptions: {
-	filter: 'audioonly',
-	highWaterMark: 1 << 25
-} });
+client.player = new Player(client);
 
 process.on('unhandledRejection', (reason, pr) => {
 	console.log(' [antiCrash] :: Unhandled Rejection/Catch');
