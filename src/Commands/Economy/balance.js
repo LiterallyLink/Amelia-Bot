@@ -5,7 +5,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			aliases: ['bal'],
+			aliases: ['bal', 'credits'],
 			description: 'Returns the balance of a specified user',
 			category: 'Economy',
 			usage: '<optional user>',

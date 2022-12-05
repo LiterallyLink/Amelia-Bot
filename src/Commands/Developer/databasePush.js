@@ -18,7 +18,7 @@ module.exports = class extends Command {
 
 	async addNewItemToDocuments() {
 		try {
-			const guildUpdateLog = await guildDatabase.updateMany({}, { $set: { customCommands: [] } });
+			const guildUpdateLog = await guildDatabase.updateMany({}, { $set: { banLog: [] } });
 			console.log(guildUpdateLog);
 		} catch (err) {
 			console.log(err);

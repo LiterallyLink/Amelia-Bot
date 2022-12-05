@@ -6,6 +6,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
+			description: 'Place a bet and guess whether the number is high or low!',
 			category: 'Gambling',
 			usage: '(bet)',
 			guildOnly: true
@@ -24,15 +25,14 @@ module.exports = class extends Command {
 
 		const validBet = await this.client.economy.isValidPayment(message, bet);
 
-		if (!validBet) {
-			return;
-		}
+		if (!validBet) return;
 
 		const current = this.client.games.get(message.channel.id);
 
 		if (current) {
 			const gameInProgress = new MessageEmbed()
 				.setDescription(`Please wait until the current game of \`${current.name}\` is finished.`)
+				.setThumbnail(this.client.embed.thumbnails.ameShake)
 				.setColor(this.client.embed.color.error);
 			return message.reply({ embeds: [gameInProgress] });
 		}
@@ -56,7 +56,6 @@ module.exports = class extends Command {
 					.setLabel('Stop')
 					.setStyle('PRIMARY')
 			);
-
 
 		const highOrLowEmbed = new MessageEmbed()
 			.setAuthor(`Highlow - Bet ${bet}`, message.author.displayAvatarURL())

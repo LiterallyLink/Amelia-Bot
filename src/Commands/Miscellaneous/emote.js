@@ -21,22 +21,36 @@ module.exports = class extends Command {
 		const isDiscordEmote = discordEmoteRegex.test(emote);
 		const isUnicodeEmote = unicodeEmoteRegex.test(emote);
 
-		if (isDiscordEmote) {
-			const emoteRegex = emote.replace(discordEmoteRegex, '$1');
-			const emoji = message.guild.emojis.cache.find((emj) => emj.name === emote || emj.id === emoteRegex);
+		try {
+			if (isDiscordEmote) {
+				const emoteRegex = emote.replace(discordEmoteRegex, '$1');
+				const emoji = message.guild.emojis.cache.find((emj) => emj.name === emote || emj.id === emoteRegex);
 
-			const discordEmoteEmbed = new MessageEmbed()
-				.setAuthor(`Information for ${emoji.name}`, message.guild.iconURL())
-				.setDescription(`\`<:${emoji.name}:${emoji.id}>\``)
-				.addField('Creation Date', `${moment(emoji.createdTimeStamp).format('LT')} ${moment(emoji.createdTimeStamp).format('LL')}`)
-				.setImage(emoji.url)
+				const discordEmoteEmbed = new MessageEmbed()
+					.setAuthor(`Information for ${emoji.name}`, message.guild.iconURL())
+					.setDescription(`\`<:${emoji.name}:${emoji.id}>\``)
+					.addField('Creation Date', `${moment(emoji.createdTimeStamp).format('LT')} ${moment(emoji.createdTimeStamp).format('LL')}`)
+					.setImage(emoji.url)
+					.setColor(this.client.embed.color.default);
+				return message.channel.send({ embeds: [discordEmoteEmbed] });
+			} else if (isUnicodeEmote) {
+				const unicodeEmoteEmbed = new MessageEmbed()
+					.setDescription(`${emote} is a default unicode emoji`)
+					.setColor(this.client.embed.color.default);
+				return message.channel.send({ embeds: [unicodeEmoteEmbed] });
+			}
+		} catch (err) {
+			const emoteID = emote.replace(/<a?:\w+:(\d+)>/g, '$1');
+			const fileExtension = emote.startsWith('<a') ? '.gif' : '.png';
+			const emoteURL = `https://cdn.discordapp.com/emojis/${emoteID}${fileExtension}`;
+			const emoteName = emote.substring(emote.indexOf(':') + 1, emote.lastIndexOf(':'));
+
+			const fromOtherGuildEmbed = new MessageEmbed()
+				.setAuthor(`Information for ${emoteName}`, message.guild.iconURL())
+				.setDescription(`\`${emote}${emoteID}\``)
+				.setImage(emoteURL)
 				.setColor(this.client.embed.color.default);
-			return message.channel.send({ embeds: [discordEmoteEmbed] });
-		} else if (isUnicodeEmote) {
-			const unicodeEmoteEmbed = new MessageEmbed()
-				.setDescription(`${emote} is a default unicode emoji`)
-				.setColor(this.client.embed.color.default);
-			return message.channel.send({ embeds: [unicodeEmoteEmbed] });
+			return message.channel.send({ embeds: [fromOtherGuildEmbed] });
 		}
 
 		const emojiList = message.guild.emojis.cache.map(emj => `${emj}`);

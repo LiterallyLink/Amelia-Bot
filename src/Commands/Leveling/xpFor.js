@@ -13,7 +13,7 @@ module.exports = class extends Command {
 	}
 
 	async run(message, [number]) {
-		if (this.client.utils.isInt(number)) {
+		if (!this.client.utils.isInt(number)) {
 			const noNumberGivenEmbed = new MessageEmbed()
 				.setAuthor(`Invalid Level Provided`, message.author.displayAvatarURL())
 				.setDescription(`Please provide a valid number\n\nUsage: \`${this.usage}\``)

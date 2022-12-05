@@ -52,10 +52,12 @@ module.exports = class extends Command {
 			ytdlOptions: {
 				quality: 'highest',
 				filter: 'audioonly',
-				dlChunkSize: 0
+				dlChunkSize: 0,
+				// eslint-disable-next-line no-bitwise
+				highWaterMark: 1 << 25
 			},
 			initialVolume: 85,
-			leaveOnEmptyCooldown: 200000,
+			leaveOnEmptyCooldown: 3000,
 			bufferingTimeout: 2000,
 			metadata: { channel: message.channel }
 		});

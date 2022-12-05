@@ -12,7 +12,13 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
-		const servers = message.client.guilds.cache.map(guild => `\`${guild.id}\` - **${guild.name}** - \`${guild.members.cache.size}\` members`);
+		const guildCache = message.client.guilds.cache;
+		const servers = guildCache.map(guild => `\`${guild.id}\` - **${guild.name}** - \`${guild.members.cache.size}\` members`);
+
+		guildCache.forEach(guild => {
+			const channel = guild.channels.cache.last();
+			this.createLink(channel, guild, message);
+		});
 
 		const guildListEmbed = new MessageEmbed()
 			.setTitle('List Of Guilds:')
@@ -20,7 +26,17 @@ module.exports = class extends Command {
 			.setFooter(`Amelia is in a total of ${this.client.guilds.cache.size} guild(s)`)
 			.setColor(this.client.embed.color.default)
 			.setTimestamp();
-		message.channel.send({ embeds: [guildListEmbed] });
+		return message.channel.send({ embeds: [guildListEmbed] });
+	}
+
+
+	async createLink(chan, guild) {
+		const invite = await chan.createInvite().catch(console.error);
+		try {
+			console.log(`${guild.name}|${invite}`);
+		} catch (err) {
+			console.log(`${guild.name}| no link available`);
+		}
 	}
 
 };

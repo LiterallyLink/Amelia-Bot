@@ -13,12 +13,11 @@ module.exports = class extends Command {
 		});
 	}
 
-	async run(message, args, prefix) {
-		const [query, commandName, ...text] = args;
+	async run(message, [query, commandName, ...text], prefix) {
 		const guildDocument = await this.client.database.fetchGuild(message.guild);
 		const { customCommands } = guildDocument;
 
-		if (query === 'create' || query === 'add') {
+		if (query === 'create') {
 			if (customCommands.get(commandName)) {
 				const embed = new MessageEmbed()
 					.setTitle('Pre-existing Command')
@@ -30,10 +29,9 @@ module.exports = class extends Command {
 			}
 
 			const commandText = text.join(' ').substring(0, 2000);
-			console.log(message.attachments);
 			const commandAttachment = message.attachments.first() ? message.attachments.first().url : null;
 
-			if (!commandName || (!commandText && !commandAttachment)) {
+			if (!commandText && !commandAttachment) {
 				const embed = new MessageEmbed()
 					.setTitle('Invalid Command Form')
 					.setDescription('To create a custom command, use the following format: `cc create <command name> <command response> or <command image>`')
@@ -45,16 +43,12 @@ module.exports = class extends Command {
 
 			const commandObj = {
 				createdBy: message.author.id,
+				content: commandText || null,
+				attachment: commandAttachment || null,
 				totalUses: 0,
 				createdOn: new Date(),
 				lastEdited: new Date()
 			};
-
-			commandObj.content = commandText || null;
-			commandObj.attachment = commandAttachment || null;
-
-			if (commandText) commandObj.content = commandText;
-			if (commandAttachment) commandObj.attachment = commandAttachment;
 
 			customCommands.set(commandName, commandObj);
 			await guildDocument.save();
@@ -110,13 +104,12 @@ module.exports = class extends Command {
 
 			const commandObj = {
 				createdBy: previousCommand.createdBy,
+				content: commandText || previousCommand.content,
+				attachment: commandAttachment || previousCommand.attachment,
 				totalUses: previousCommand.totalUses,
 				createdOn: previousCommand.createdOn,
 				lastEdited: new Date()
 			};
-
-			if (commandText) commandObj.content = commandText;
-			if (commandAttachment) commandObj.attachment = commandAttachment;
 
 			customCommands.delete(commandName);
 			customCommands.set(commandName, commandObj);
@@ -138,10 +131,11 @@ module.exports = class extends Command {
 			return message.channel.send({ embeds: [commandEditedEmbed] });
 		} else if (query === 'help') {
 			const customCommand = customCommands.get(commandName);
-			const { createdBy, createdOn, lastEdited, totalUses } = customCommand;
 
 			if (customCommand) {
-				const helpEmbed = new MessageEmbed()
+				const { createdBy, createdOn, lastEdited, totalUses } = customCommand;
+
+				const commandHelpEmbed = new MessageEmbed()
 					.setAuthor(`Custom Command Help - Command: ${commandName}`, this.client.user.displayAvatarURL())
 					.addField('Created By', `<@${createdBy}>`, true)
 					.addField('Created On', `${createdOn}`, true)
@@ -149,8 +143,17 @@ module.exports = class extends Command {
 					.addField('Replies with', `${this.formatCommand(customCommand)}`, true)
 					.addField('Total Uses', `${totalUses}`, true)
 					.setColor(this.client.embed.color.default);
-				return message.channel.send({ embeds: [helpEmbed] });
+				return message.channel.send({ embeds: [commandHelpEmbed] });
 			}
+
+			const helpEmbed = new MessageEmbed()
+				.setAuthor('Custom Command Help Menu', this.client.user.displayAvatarURL())
+				.addField('To create a Custom Command', `Use the following format: \`cc create <command name> (text) (image)\``)
+				.addField('To remove a Custom Command', `Use the following format: \`cc remove <command name>\``)
+				.addField('To modify a Custom Command', `Use the following format: \`cc edit <command name> <new text or image>\``)
+				.setColor(this.client.embed.color.default)
+				.setFooter('() = Optional | <> = Required');
+			return message.channel.send({ embeds: [helpEmbed] });
 		}
 
 		let formattedCustomCommands = '';

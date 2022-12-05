@@ -28,7 +28,7 @@ module.exports = class extends Command {
 			return message.channel.send({ embeds: [noQueue] });
 		}
 
-		if (!trackNum && !queue.tracks[trackNum]) {
+		if (!trackNum || !queue.tracks[trackNum - 1]) {
 			const noTrackGiven = new MessageEmbed()
 				.setDescription('Please provide a valid track to remove!')
 				.setThumbnail(this.client.embed.thumbnails.ameShake)
@@ -36,7 +36,7 @@ module.exports = class extends Command {
 			return message.channel.send({ embeds: [noTrackGiven] });
 		}
 
-		queue.remove(trackNum);
+		queue.remove(trackNum - 1);
 
 		const trackRemoved = new MessageEmbed()
 			.setDescription(`Successfully removed ${trackNum} from the queue!`)
